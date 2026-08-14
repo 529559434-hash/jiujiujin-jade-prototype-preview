@@ -279,6 +279,7 @@ body.board .screen{margin-top:34px;}
    点协议名仍然是去看协议，不勾选——由 JS 里的 target 判断保证。 */
 .agree{display:block;font-size:11.5px;color:var(--ink2);margin:6px 16px;padding:8px 0;border-radius:8px;line-height:2;cursor:pointer;}
 .agree.flash{animation:agreeFlash 1.1s ease;}
+.up-cell.flash{animation:agreeFlash 1.1s ease;}
 @keyframes agreeFlash{0%,100%{background:transparent;box-shadow:none;}25%,60%{background:#FFF3E0;box-shadow:0 0 0 6px #FFF3E0;}}
 @media (prefers-reduced-motion:reduce){.agree.flash{animation:none;}}
 /* inline-flex 而非 flex：.agree 改块级后，勾选框必须与文字同行，否则自己独占一行 */
@@ -415,6 +416,9 @@ body.board .screen{margin-top:34px;}
 
 /* ===== S7 订单详情 ===== */
 .done-head{background:linear-gradient(160deg,#0E7A52,#0A5C3E);color:#fff;padding:18px 16px 52px;text-align:left;}
+/* ⑧ 流程追踪里的可点链接。抽成类而不是内联 style：这些节点由 JS 拼字符串生成，
+   内联 style 带分号与空格，在无引号属性里会断——无引号属性是本文件的既定写法 */
+.od-lk{color:var(--jade);cursor:pointer;}
 .done-head .big{font-size:21px;font-weight:800;display:flex;align-items:center;gap:9px;}
 .done-head .sub{font-size:11.5px;opacity:.82;margin-top:6px;}
 .trace-card{display:flex;gap:9px;}
@@ -617,7 +621,11 @@ body.demo-empty .empty-state ~ *:not(.es-keep){display:none!important;}
 .field:last-child{border-bottom:none;}
 .field .lb{width:82px;color:var(--ink);flex-shrink:0;}
 .field .val{flex:1;color:var(--ink);}
-.field .val.ph{color:var(--ink3);}
+.field .val.ph,.field .val .ph{color:var(--ink3);}
+/* 可输入字段：空时用 data-ph 当占位符。原型里这几个字段原本是静态文本，无法演示校验 */
+.field .val.edit{outline:none;min-height:20px;}
+.field .val.edit:empty:before{content:attr(data-ph);color:var(--ink3);}
+.field .val.edit.flash{animation:agreeFlash 1.1s ease;border-radius:6px;}
 .field .val.r{text-align:right;}
 .field .val.strong{font-weight:600;}
 .field .arrow{margin-left:8px;}
@@ -1270,7 +1278,12 @@ body.demo-empty .empty-state ~ *:not(.es-keep){display:none!important;}
 .vip-bar .open{padding:9px 15px;}
 /* 列表行本身就是大热区，这里保底 */
 .me-list .li,.field,.faq-q,.faqd-nav .nq,.chat-quick .qq,.auth-row,.sb-time{min-height:44px;}
-.oc-btns .sm,.sc-foot .sm{min-height:32px;}
+.oc-btns .sm,.sc-foot .sm{min-height:32px;position:relative;}
+/* 视觉高度保持 32px（一张卡里并排三个，做到 44px 会把卡片撑变形），
+   热区用伪元素只在纵向外扩 6px＋6px 补到 44px：不改布局、不动按钮自己的水平内边距。
+   ⚠️ 不能改成 padding 简写——见上方那条注释里 ⑪ 门店搜索按钮被压坏的教训。
+   横向不外扩：并排按钮间距只有 8px，横向外扩会互相重叠、抢点击。 */
+.oc-btns .sm::after,.sc-foot .sm::after{content:"";position:absolute;left:0;right:0;top:-6px;bottom:-6px;}
 
 /* ============ 缺省态：空 / 加载中 / 加载失败 ============
    原先 42 屏只做了「正常有数据」一种状态，真实产品里这三种占比不低 */
@@ -1462,6 +1475,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
 <symbol id="i-ai" viewBox="0 0 24 24"><rect x="4.6" y="7.4" width="14.8" height="12" rx="3"/><path d="M12 4.2v3.2M2.6 11.6v3.4M21.4 11.6v3.4M9.6 16h4.8"/><path d="M9.2 12.4h.01M14.8 12.4h.01"/></symbol>
 <symbol id="i-card" viewBox="0 0 24 24"><rect x="2.8" y="5.4" width="18.4" height="13.2" rx="2.4"/><path d="M2.8 9.8h18.4M6.4 14.6h4.2"/></symbol>
 <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20.5h16"/><path d="M14.4 4.4 17.2 7.2 8.6 15.8H5.8V13z"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 11.2v5.4"/><path d="M12 7.6h.01"/></symbol>
 <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M9.5 9.6a2.5 2.5 0 1 1 3.4 2.4c-.6.25-.9.8-.9 1.5v.4"/><path d="M12 17h.01"/></symbol>
 <symbol id="i-qrcode" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.2"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.2"/><path d="M13.5 13.5h3.2v3.2h-3.2zM20.5 13.5v3.2M17.4 20.5h3.1M13.5 20.5h.01"/></symbol>
 <symbol id="i-building" viewBox="0 0 24 24"><path d="M4.6 20.5V4.5h10.8v16"/><path d="M15.4 10.6h4v9.9"/><path d="M7.6 8h2M11.4 8h2M7.6 12h2M11.4 12h2M7.6 16.2h5.8M2.8 20.5h18.4"/></symbol>
@@ -1697,11 +1711,12 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     <div class="card">
       <div class="sec-title">添加宝贝图片 <span style="color:var(--red);font-size:11px;font-weight:400;">*视频 / 正面 / 侧面 / 背面必传</span></div>
       <div class="up-grid">
-        <!-- 视频置于首格并改为必传：透光度与种水只有视频能看准，是估价精度的第一输入 -->
-        <div class="up-cell filled" onclick="toast('演示：预览 / 重新拍摄宝贝视频')"><div class="fill-bg"><div class="jade-ring" style="width:44px;height:44px;--ph-bg:#DFF0E7;"></div><span class="play">▶</span></div><em>宝贝视频 *</em></div>
-        <div class="up-cell filled" onclick="toast('演示：预览 / 重新上传正面图')"><div class="fill-bg"><div class="jade-ring" style="width:44px;height:44px;--ph-bg:#DFF0E7;"></div></div><em>宝贝正面 *</em></div>
-        <div class="up-cell filled" onclick="toast('演示：预览 / 重新上传侧面图')"><div class="fill-bg"><div class="jade-ring" style="width:44px;height:44px;--ph-bg:#DFF0E7;"></div></div><em>宝贝侧面 *</em></div>
-        <div class="up-cell filled" onclick="toast('演示：预览 / 重新上传背面图')"><div class="fill-bg"><div class="jade-ring" style="width:44px;height:44px;--ph-bg:#DFF0E7;"></div></div><em>宝贝背面 *</em></div>
+        <!-- 视频置于首格并改为必传：透光度与种水只有视频能看准，是估价精度的第一输入。
+             四格默认**未传**：原来一进页就是已填态，"必传"两个字既无法校验也无法演示 -->
+        <div class="up-cell need" data-kind="video" data-lab="宝贝视频 *" onclick="fillCell(this)"><div class="plus">＋</div><span>宝贝视频 *</span></div>
+        <div class="up-cell need" data-kind="pic" data-lab="宝贝正面 *" onclick="fillCell(this)"><div class="plus">＋</div><span>宝贝正面 *</span></div>
+        <div class="up-cell need" data-kind="pic" data-lab="宝贝侧面 *" onclick="fillCell(this)"><div class="plus">＋</div><span>宝贝侧面 *</span></div>
+        <div class="up-cell need" data-kind="pic" data-lab="宝贝背面 *" onclick="fillCell(this)"><div class="plus">＋</div><span>宝贝背面 *</span></div>
         <div class="up-cell" onclick="toast('演示：调起拍照 / 从相册选择')"><div class="plus">＋</div><span>局部细节</span></div>
         <div class="up-cell" onclick="toast('演示：调起拍照 / 从相册选择')"><div class="plus">＋</div><span>证书/发票<br>(如有)</span></div>
       </div>
@@ -1728,12 +1743,15 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
         <span class="cchip" onclick="pickOne(this)">珠串</span><span class="cchip" onclick="pickOne(this)">蛋面/裸石</span><span class="cchip" onclick="pickOne(this)">其他</span>
       </div>
     </div>
-    <div class="agree"><div class="ck off" onclick="toggleAgree(this)"></div>同意<a onclick="go('s-agr-platform')">《平台服务协议》</a><a id="form-agree-1" onclick="go('s-agr-recycle')">《回收交易协议》</a><a onclick="go('s-agr-privacy')">《隐私政策》</a></div>
+    <!-- 只勾《平台服务协议》与《隐私政策》：变现方式的分叉点在 ③，此刻用户还没选，
+     无从知道该签哪一份交易协议。从底部 tab 进来的用户原来会被默认签上《回收交易协议》，
+     若随后在 ③ 选了寄售，签的和走的就不是同一份。交易协议推到 ⑥⑩——那两屏本来就各自勾了正确的一份。
+     配套：平台服务协议一-4、一-5 已补「提交素材与建单」「AI 初估不构成要约」两条总则 -->
+    <div class="agree"><div class="ck off" onclick="toggleAgree(this)"></div>同意<a onclick="go('s-agr-platform')">《平台服务协议》</a><a onclick="go('s-agr-privacy')">《隐私政策》</a></div>
   </div>
   <div class="submit-bar">
-    <button class="btn btn-main" onclick="submitWithAgree(this,'s-ai')">提交估价 · 约3分钟出参考区间</button>
+    <button class="btn btn-main" onclick="submitForm(this)">提交估价 · 约 3 分钟出参考区间</button>
     <div class="tip">支持多件分次提交 · 估价完全免费 · 不满意不寄出</div>
-  </div>
   </div>
 </div>
 
@@ -1749,7 +1767,27 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
         <div class="info"><b>翡翠冰种手镯 56.5圈口</b><span>回收单 JJH-260721-4TG9PN · 今天 15:58 提交</span></div>
       </div>
     </div>
-    <div class="ai-price-card">
+    <!-- 估价中：提交到出结果之间有 3 分钟，原来这段在全站没有落点——
+         点「提交估价」瞬间就跳到已完成的 ③，用户以为算法是即时的。
+         骨架与 ⑰ 商城的 loading 态同一套 .sk 类 -->
+    <div class="ai-pending" id="ai-pending" style="display:none;">
+      <div class="ai-price-card" style="text-align:left;">
+        <span class="ai-lab"><svg class="ico"><use href="#i-ai"/></svg> AI 识别中 · 约 3 分钟</span>
+        <div class="sk" style="height:34px;margin:12px 0 10px;width:76%;"></div>
+        <div class="sk" style="height:13px;width:56%;"></div>
+        <div class="ai-tags" style="margin-top:12px;">
+          <span class="sk" style="height:20px;width:96px;border-radius:99px;"></span>
+          <span class="sk" style="height:20px;width:112px;border-radius:99px;"></span>
+        </div>
+      </div>
+      <div class="tip-note" style="text-align:center;padding:12px 16px 0;">
+        出结果后<b style="color:var(--ink);">微信通知您</b>，可以先去忙别的
+      </div>
+      <div class="two-btns" style="margin-top:10px;">
+        <button class="btn btn-ghost" style="flex:1;" onclick="go('s-home')">回首页等通知</button>
+      </div>
+    </div>
+    <div class="ai-price-card" id="ai-price">
       <span class="ai-lab"><svg class="ico"><use href="#i-ai"/></svg> AI 初估参考区间 · 约 3 分钟</span>
       <div class="range"><small>¥</small>3,200 <small>–</small> <small>¥</small>6,000</div>
       <div class="sub"><b>算法初估，不构成报价</b> · 实际价格取决于您选择的变现方式</div>
@@ -1760,13 +1798,13 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     <div class="card">
       <div class="sec-title">进度</div>
       <div class="steps-v">
-        <div class="stepv done"><div class="dot">✓</div><div><b>AI 初估完成</b><span>今天 16:01 · 算法给出参考区间，不构成报价</span></div></div>
-        <div class="stepv doing"><div class="dot">●</div><div><b>选择变现方式</b><span>现款回收或委托寄售</span></div></div>
+        <div class="stepv done" id="ai-step1"><div class="dot">✓</div><div><b>AI 初估完成</b><span>今天 16:01 · 算法给出参考区间，不构成报价</span></div></div>
+        <div class="stepv doing" id="ai-step2"><div class="dot">●</div><div><b>选择变现方式</b><span>现款回收或委托寄售</span></div></div>
         <div class="stepv todo"><div class="dot">3</div><div><b>交货与鉴定</b><span>货品经质检中心核验，第三方鉴定公司出具报告</span></div></div>
         <div class="stepv todo"><div class="dot">4</div><div><b id="ai-step4-t">机构比价与成交</b><span id="ai-step4-s">各家基于<em style="font-style:normal;font-weight:600;">同一份鉴定报告</em>出价</span></div></div>
       </div>
     </div>
-    <div class="card">
+    <div class="card" id="ai-fork-card">
       <div class="sec-title">选择变现方式</div>
       <!-- 对比与选择合一：原先是「分叉双卡 ＋ 对比表」两块，卡片上的三条表格里全有，
            等于同一件事在同屏说两遍，还叠了两套排版语言与整片绿字金字。
@@ -1811,7 +1849,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
         <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;--ph-bg:#0E7A52;"></div></div>
         <div class="info"><b>翡翠冰种手镯 56.5圈口</b><span>回收单 JJH-260721-4TG9PN · 已推送 5 家经审核的回收机构</span></div>
       </div>
-      <div class="bh-rep" onclick="go('s-report')">
+      <div class="bh-rep" onclick="goReport('GY-20260721-0882')">
         <svg class="ico"><use href="#i-report"/></svg>
         <div><b>各家报价依据同一份鉴定报告</b><span>国玉检测（广东）· GY-20260721-0882 · 出具于 07-21</span></div>
         <span class="go">查看报告 ›</span>
@@ -1890,7 +1928,9 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     <div class="quote-meta">
       <span>报价有效期 <b>72 小时</b>（至 07-24）</span>
       <span class="qm-link" onclick="goFaq(9)">机构全名何时公布 ›</span>
-      <span class="qm-link" onclick="toast('去程与回程运费均由您承担。未成交的另收鉴定费；本轮无机构出价、以及报告出具前取消的，不收鉴定费。保价费由平台承担。')">费用说明 ›</span>
+      <!-- 原来用 toast 承载 57 字、1.9 秒消失。这是决定「要不要拒绝报价」的核心信息，
+           读不完；同屏的「上架标准」用的是可滚动弹层，两种承载方式也不一致。改用同一套弹层 -->
+      <span class="qm-link" onclick="openFee()">费用说明 ›</span>
     </div>
     <div class="route-switch" onclick="askSwitch('toConsign')">
       <div>自行定价出售？<b>转为委托寄售不产生运费</b></div>
@@ -2070,6 +2110,15 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
       <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消预约</button><button class="sm" onclick="event.stopPropagation();toast('演示：地图导航到店')">地图导航</button><button class="sm hi" onclick="event.stopPropagation();go('s-realname')">实名认证</button></div>
     </div>
+    <!-- 估价中：② 提交即建单，到出参考区间之间约 3 分钟，这段原来在订单页没有任何卡片 -->
+    <div class="order-card" data-seg="doing" data-type="recycle" onclick="goAiPending()">
+      <div class="oc-top"><span>回收单 · JJH-260722-N8XC4D</span><span class="st gold">估价中</span></div>
+      <div class="oc-body">
+        <div class="thumb-box"><div class="jade-bead" style="width:42px;height:42px;"></div></div>
+        <div class="oc-info"><b>翡翠糯种平安扣</b><div class="meta">07-22 15:58 提交 · AI 识别中，约 3 分钟出参考区间</div><div class="meta">出结果后微信通知您，再选变现方式</div></div>
+      </div>
+      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消订单</button><button class="sm hi" onclick="event.stopPropagation();goAiPending()">查看进度</button></div>
+    </div>
     <div class="order-card" data-seg="doing" data-type="recycle" onclick="go('s-quote')">
       <div class="oc-top"><span>回收单 · JJH-260721-4TG9PN</span><span class="st gold">竞价中</span></div>
       <div class="oc-body">
@@ -2080,7 +2129,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     </div>
     <!-- 「已交货」这一段内部还有三个子状态（运送中 / 质检核验中 / 鉴定中），
          不再各设段位——段位是筛选器，不是状态机全集。改在卡片标签上区分 -->
-    <div class="order-card" data-seg="doing" data-type="recycle" onclick="go('s-detail')">
+    <div class="order-card" data-seg="doing" data-type="recycle" onclick="goDetail('JJH-260720-7BKW5V')">
       <div class="oc-top"><span>回收单 · JJH-260720-7BKW5V</span><span class="st gray">运送中</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
@@ -2088,39 +2137,39 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
       <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('paid')">取消回收</button><button class="sm hi" onclick="event.stopPropagation();toast('物流详情（演示）')">物流详情</button></div>
     </div>
-    <div class="order-card" data-seg="doing" data-type="recycle" onclick="go('s-detail')">
+    <div class="order-card" data-seg="doing" data-type="recycle" onclick="goDetail('JJH-260720-M8Q3ZH')">
       <div class="oc-top"><span>回收单 · JJH-260720-M8Q3ZH</span><span class="st gray">鉴定中</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
         <div class="oc-info"><b>翡翠飘阳绿叶子吊坠</b><div class="meta">07-20 质检中心签收 · 开箱核验已完成</div><div class="meta">第三方鉴定公司出具报告中，报告出具后开启机构竞价</div></div>
       </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('paid')">取消回收</button><button class="sm hi" onclick="event.stopPropagation();go('s-detail')">查看进度</button></div>
+      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('paid')">取消回收</button><button class="sm hi" onclick="event.stopPropagation();goDetail('JJH-260720-M8Q3ZH')">查看进度</button></div>
     </div>
     <div class="order-card" data-seg="pending" data-type="recycle" onclick="goRecheck()">
       <div class="oc-top"><span>回收单 · JJH-260719-2JF6WX</span><span class="st red">待您确认成交</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-bead" style="width:42px;height:42px;"></div></div>
-        <div class="oc-info"><b>翡翠紫罗兰珠串</b><div class="meta">07-20 质检中心签收 · 07-21 鉴定报告已出具</div><div class="pr">机构报价 <span class="price">¥1,120</span><div class="meta">本轮最高 · 报价方：中翠源珠宝 · 依据报告 GY-20260721-0882</div></div></div>
+        <div class="oc-info"><b>翡翠紫罗兰珠串</b><div class="meta">07-20 质检中心签收 · 07-21 鉴定报告已出具</div><div class="pr">机构报价 <span class="price">¥1,120</span><div class="meta">本轮最高 · 报价方：中翠源珠宝 · 依据报告 GY-20260721-0447</div></div></div>
       </div>
       <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('开箱核验录像回放（演示）')">开箱录像</button><button class="sm hi" onclick="event.stopPropagation();goRecheck()">去确认</button></div>
     </div>
     <!-- 待寄出＝货还在用户手上，此时不存在任何报价，入口只能是「去交货」 -->
-    <div class="order-card" data-seg="pending" data-type="recycle" onclick="go('s-ship')">
+    <div class="order-card" data-seg="pending" data-type="recycle" onclick="goShip('cash')">
       <div class="oc-top"><span>回收单 · JJH-260718-R5N9TC</span><span class="st gray">待寄出</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
         <div class="oc-info"><b>翡翠晴水平安扣</b><div class="meta">07-18 已选择现款回收 · 交货后出报告，再由多家机构报价</div></div>
       </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消订单</button><button class="sm hi" onclick="event.stopPropagation();go('s-ship')">去预约交货</button></div>
+      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消订单</button><button class="sm hi" onclick="event.stopPropagation();goShip('cash')">去预约交货</button></div>
     </div>
     <!-- 寄售单同样从「待寄出」起步：③ 选定委托寄售即建单，交货 → 鉴定 → 才上架 -->
-    <div class="order-card" data-seg="pending" data-type="consign" onclick="go('s-ship')">
+    <div class="order-card" data-seg="pending" data-type="consign" onclick="goShip('consign')">
       <div class="oc-top"><span>寄售单 · JJC-260722-T7QF3X</span><span class="st gray">待寄出</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
         <div class="oc-info"><b>翡翠飘花手镯 54 圈口</b><div class="meta">07-22 已选择委托寄售 · 交货后出报告，再由您确定挂价上架</div></div>
       </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消订单</button><button class="sm hi" onclick="event.stopPropagation();go('s-ship')">去预约交货</button></div>
+      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消订单</button><button class="sm hi" onclick="event.stopPropagation();goShip('consign')">去预约交货</button></div>
     </div>
     <div class="order-card" data-seg="pending" data-type="consign" onclick="go('s-book-ok')">
       <div class="oc-top"><span class="oc-ch">代收点</span><b style="font-size:13.5px;">当面交件</b><span class="st gold">待到店</span></div>
@@ -2130,15 +2179,15 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
       <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消预约</button><button class="sm" onclick="event.stopPropagation();toast('演示：地图导航到店')">地图导航</button></div>
     </div>
-    <div class="order-card" data-seg="doing" data-type="consign" onclick="go('s-consign')">
+    <div class="order-card" data-seg="doing" data-type="consign" onclick="goDetail('JJC-260721-B6HP2W')">
       <div class="oc-top"><span>寄售单 · JJC-260721-B6HP2W</span><span class="st gray">鉴定中</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-bead" style="width:42px;height:42px;"></div></div>
         <div class="oc-info"><b>翡翠糯冰福瓜吊坠</b><div class="meta">07-21 质检中心签收 · 第三方鉴定公司出具报告中</div><div class="meta">报告出具后由您确定挂价并上架商城</div></div>
       </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('paid')">取消寄售</button><button class="sm hi" onclick="event.stopPropagation();go('s-detail')">查看进度</button></div>
+      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('paid')">取消寄售</button><button class="sm hi" onclick="event.stopPropagation();goDetail('JJC-260721-B6HP2W')">查看进度</button></div>
     </div>
-    <div class="order-card" data-seg="doing" data-type="consign" onclick="go('s-consign')">
+    <div class="order-card" data-seg="doing" data-type="consign" onclick="goConsign('live')">
       <div class="oc-top"><span>寄售单 · JJC-260713-9KM4VZ</span><span class="st gold">在售中</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
@@ -2147,7 +2196,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('修改挂价（演示）：降价可提高成交率')">降价促售</button><button class="sm hi" onclick="event.stopPropagation();go('s-consign')">寄售管理</button></div>
     </div>
     <!-- 售出到到账最长 10 天（买家确认收货后分账）。这段过程若不可见，卖家只会来问客服"东西卖了怎么没钱" -->
-    <div class="order-card" data-seg="doing" data-type="consign" onclick="go('s-consign')">
+    <div class="order-card" data-seg="doing" data-type="consign" onclick="goConsign('sold')">
       <div class="oc-top"><span>寄售单 · JJC-260701-N3XR8T</span><span class="st">已售出 · 待买家确认收货</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-drop" style="width:34px;height:44px;"></div></div>
@@ -2166,7 +2215,9 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
          归「售后」段而非新设段位——它是需要平台介入处理的进行中事项（4.5.3 判据）。
          2026-08-12：寄售不支持七日无理由退货，此段位只剩「货品与描述不符 / 鉴定结论有误」一类，
          量级大幅下降但不能删——这一类《消法》第 24 条排除不掉。 -->
-    <div class="order-card" data-seg="aftersale" data-type="consign" onclick="go('s-consign')">
+    <!-- ⑯ 只有「在售中／已售出」两个态，没有「退货中」；卡片整体不再跳 ⑯（会落到错的态），
+         处理入口交给下面两个按钮。退货中的详情屏本身还缺，见 review.md -->
+    <div class="order-card" data-seg="aftersale" data-type="consign" onclick="toast('退货进度（演示）· 详情请联系客服')">
       <div class="oc-top"><span>寄售单 · JJC-260709-W4RT6K</span><span class="st red">退货中</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
@@ -2174,7 +2225,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
       <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('退货进度（演示）')">退货进度</button><button class="sm hi" onclick="event.stopPropagation();go('s-chat')">联系客服</button></div>
     </div>
-    <div class="order-card" data-seg="cancelled" data-type="recycle" onclick="go('s-detail')">
+    <div class="order-card" data-seg="cancelled" data-type="recycle" onclick="goDetail('JJH-260717-8VD3KP')">
       <div class="oc-top"><span>回收单 · JJH-260717-8VD3KP</span><span class="st gray">已拒绝报价</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
@@ -2182,7 +2233,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
       <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('物流详情（演示）')">物流详情</button><button class="sm hi" onclick="event.stopPropagation();goForm('cash','pickup')">重新估价</button></div>
     </div>
-    <div class="order-card" data-seg="cancelled" data-type="recycle" onclick="go('s-detail')">
+    <div class="order-card" data-seg="cancelled" data-type="recycle" onclick="goDetail('JJH-260715-6HW2NF')">
       <div class="oc-top"><span>回收单 · JJH-260715-6HW2NF</span><span class="st gray">已取消</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
@@ -2210,13 +2261,13 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
       <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();go('s-funds')">资金记录</button><button class="sm hi" onclick="event.stopPropagation();go('s-chat')">联系客服</button></div>
     </div>
-    <div class="order-card" data-seg="done" data-type="recycle" onclick="go('s-detail')">
+    <div class="order-card" data-seg="done" data-type="recycle" onclick="goDetail('JJH-260713-3XM8VD')">
       <div class="oc-top"><span>回收单 · JJH-260713-3XM8VD</span><span class="st green">已打款</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-drop" style="width:40px;height:48px;"></div></div>
         <div class="oc-info"><b>翡翠飘绿佛公吊坠</b><div class="meta">顺丰上门 · 07-15 成交 · 打款方：粤宝翡翠</div><div class="pr">成交金额 <span class="price">¥4,600</span></div></div>
       </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();go('s-detail')">查看详情</button><button class="sm hi" onclick="event.stopPropagation();goForm('cash','')">再卖一件</button></div>
+      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();goDetail('JJH-260713-3XM8VD')">查看详情</button><button class="sm hi" onclick="event.stopPropagation();goForm('cash','')">再卖一件</button></div>
     </div>
     <div class="order-card" data-seg="done" data-type="consign" onclick="toast('寄售成交详情（演示）')">
       <div class="oc-top"><span>寄售单 · JJC-260620-5DW7QJ</span><span class="st green">寄售已成交</span></div>
@@ -2226,20 +2277,19 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
       <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();go('s-certs')">查看证书</button><button class="sm hi" onclick="event.stopPropagation();goForm('consign','')">再寄售一件</button></div>
     </div>
-    <div class="order-card" data-seg="done" data-type="recycle" onclick="toast('回收成交详情（演示）')">
+    <div class="order-card" data-seg="done" data-type="recycle" onclick="goDetail('JJH-260603-K7QW42')">
       <div class="oc-top"><span>回收单 · JJH-260603-K7QW42</span><span class="st green">已打款</span></div>
       <div class="oc-body">
         <div class="thumb-box"><div class="jade-ring" style="width:40px;height:40px;"></div></div>
         <div class="oc-info"><b>翡翠白底青挂件</b><div class="meta">驻店门店当面成交 · 06-05 · 打款方：瑞玉堂</div><div class="pr">成交金额 <span class="price">¥1,120</span>（含加价券 ¥10）</div></div>
       </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();go('s-certs')">查看证书</button><button class="sm hi" onclick="event.stopPropagation();goForm('cash','')">再卖一件</button></div>
+      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();goDetail('JJH-260603-K7QW42')">查看详情</button><button class="sm hi" onclick="event.stopPropagation();goForm('cash','')">再卖一件</button></div>
     </div>
     <div class="order-empty" id="order-empty" style="display:none;">
       <div class="oe-box"><svg class="ico"><use href="#i-box"/></svg></div>
       <div class="oe-txt" id="oe-txt">还没有订单</div>
       <div class="es-act" id="oe-act" style="display:inline-block;margin-top:12px;" onclick="goForm('cash','pickup')">去免费估价</div>
     </div></div>
-  </div>
   <!-- tab 栏已摘除：底部五格为 首页/门店/免费估价/商城/我的，订单与消息都不是 tab，
        它们从“我的”进入、靠返回退出。旧版在此挂 tab 栏是自营时期的遗留 -->
 </div>
@@ -2250,29 +2300,34 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
   <div class="capsule-row"><i>•••</i><i>◉</i></div>
   <div class="navbar" style="background:#0E7A52;color:#fff;"><span class="back" onclick="back()">‹</span>订单详情</div>
   <div class="scroll">
-    <div class="done-head">
+    <!-- 一屏三态 × 两条业务线，由 renderDetail() 按订单号渲染，数据见 ORDERS。
+         原来整屏写死在「已收款」这一态，却被 6 类订单卡共用（运送中／鉴定中／寄售鉴定中／
+         已拒绝报价／已取消／已打款），其中 5 类点进去都看到「✓ 已收款 ¥4,600」。 -->
+    <div class="done-head" id="od-head">
       <div class="big"><svg class="ico"><use href="#i-check"/></svg> 已收款 <span style="font-size:24px;">¥4,600</span></div>
       <div class="sub">由“粤宝翡翠回收（深圳）”直接汇入 招商银行储蓄卡（尾号8837） · 07-15 14:02</div>
     </div>
     <div class="card" style="margin-top:-36px;position:relative;z-index:5;box-shadow:0 8px 22px rgba(10,70,45,.13);">
       <div class="cons-item">
         <div class="pic" style="width:64px;height:64px;"><div class="jade-drop" style="width:34px;height:42px;"></div></div>
-        <div><b>翡翠飘绿佛公吊坠</b><div class="no">回收单号 JJH-260713-3XM8VD · 一物一码 SY-260715-T8ZV5HN2</div>
-        <div class="stat-row"><span class="tag">鉴定报告已出具</span><span class="tag gold">天然A货</span></div></div>
+        <div><b id="od-goods">翡翠飘绿佛公吊坠</b><div class="no" id="od-no">回收单号 JJH-260713-3XM8VD · 一物一码 SY-260715-T8ZV5HN2</div>
+        <div class="stat-row" id="od-tags"><span class="tag">鉴定报告已出具</span><span class="tag gold">天然A货</span></div></div>
       </div>
-      <!-- 打款方署名是平台模式对用户最关键的一次告知：钱不是久久金给的，必须写清是谁给的 -->
-      <div class="sign-row">
+      <!-- 打款方署名是平台模式对用户最关键的一次告知：钱不是久久金给的，必须写清是谁给的。
+           ⚠️ 成交前不显示：那时既没有打款方，机构对用户也仍是代号（PRD 4.12） -->
+      <div class="sign-row" id="od-payer">
         <div class="sg-i"><svg class="ico"><use href="#i-money"/></svg></div>
-        <div class="sg-b"><b>打款方：粤宝翡翠回收（深圳）有限公司</b><span>第三方回收机构 · 款项不经久久金账户</span></div>
+        <div class="sg-b"><b id="od-payer-t">打款方：粤宝翡翠回收（深圳）有限公司</b><span>第三方回收机构 · 款项不经久久金账户</span></div>
       </div>
-      <div class="sign-row">
+      <!-- 报告未出具时不显示鉴定方 -->
+      <div class="sign-row" id="od-lab">
         <div class="sg-i"><svg class="ico"><use href="#i-report"/></svg></div>
         <div class="sg-b"><b>鉴定方：国玉检测技术（广东）有限公司</b><span>第三方鉴定公司 · 不参与出价</span></div>
       </div>
     </div>
     <div class="card">
       <div class="sec-title">流程追踪</div>
-      <div class="steps-v">
+      <div class="steps-v" id="od-steps">
         <div class="stepv done"><div class="dot">✓</div><div><b>提交估价 · AI 初估 ¥3,900–¥5,100</b><span>07-13 15:58 · 算法初估，不构成报价</span></div></div>
         <div class="stepv done"><div class="dot">✓</div><div><b>选择现款回收 · 预约交货</b><span>07-13 17:36 · 变现方式已选定，机构在报告出具后才报价</span></div></div>
         <div class="stepv done"><div class="dot">✓</div><div><b>顺丰上门取件（全额保价）</b><span>07-14 10:05 · <span style="color:var(--jade);cursor:pointer;" onclick="toast('物流详情（演示）：SF1324558891 已由质检中心签收')">SF1324558891 ›</span></span></div></div>
@@ -2282,16 +2337,18 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
         <div class="stepv done"><div class="dot">✓</div><div><b>机构打款 ¥4,600 → 平台核验到账 → 放货</b><span>07-15 14:02 · 招商银行（8837）</span></div></div>
       </div>
     </div>
-    <div class="card">
+    <div class="card" id="od-trace-card">
       <div class="sec-title">交易保障</div>
-      <div class="trace-card">
-        <div class="tc" onclick="toast('开箱核验录像回放（演示）· 对您免费，不收查询费')"><div class="i"><svg class="ico"><use href="#i-video"/></svg></div><b>开箱录像</b><span>免费·留存180天</span></div>
-        <div class="tc" onclick="go('s-report')"><div class="i"><svg class="ico"><use href="#i-report"/></svg></div><b>鉴定报告</b><span>第三方出具</span></div>
-        <div class="tc" onclick="toast('一物一码验证（演示）· 请在本小程序内扫码，本码已被查询 3 次')"><div class="i"><svg class="ico"><use href="#i-qrcode"/></svg></div><b>一物一码</b><span>已查询3次</span></div>
-        <div class="tc" onclick="toast('查看电子凭证 · 可申请开票（演示）')"><div class="i"><svg class="ico"><use href="#i-receipt"/></svg></div><b>电子凭证</b><span>可开发票</span></div>
+      <!-- 四格随状态显隐：开箱录像与一物一码在质检中心签收后才有；鉴定报告要报告已出具；
+           电子凭证／开票只有成交才有——进行中与未成交态摆着它，指的是一笔不存在的交易 -->
+      <div class="trace-card" id="od-trace">
+        <div class="tc" data-need="in" onclick="toast('开箱核验录像回放（演示）· 对您免费，不收查询费')"><div class="i"><svg class="ico"><use href="#i-video"/></svg></div><b>开箱录像</b><span>免费·留存180天</span></div>
+        <div class="tc" data-need="report" onclick="goDetailReport()"><div class="i"><svg class="ico"><use href="#i-report"/></svg></div><b>鉴定报告</b><span>第三方出具</span></div>
+        <div class="tc" data-need="in" onclick="toast('一物一码验证（演示）· 请在本小程序内扫码，本码已被查询 3 次')"><div class="i"><svg class="ico"><use href="#i-qrcode"/></svg></div><b>一物一码</b><span>已查询3次</span></div>
+        <div class="tc" data-need="deal" onclick="toast('查看电子凭证 · 可申请开票（演示）')"><div class="i"><svg class="ico"><use href="#i-receipt"/></svg></div><b>电子凭证</b><span>可开发票</span></div>
       </div>
     </div>
-    <div class="two-btns">
+    <div class="two-btns" id="od-acts">
       <button class="btn btn-ghost" onclick="go('s-service')">联系客服</button>
       <button class="btn btn-main" onclick="goForm('cash','')">再卖一件</button>
     </div>
@@ -2321,11 +2378,11 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
       <div class="sign-row">
         <div class="sg-i"><svg class="ico"><use href="#i-report"/></svg></div>
-        <div class="sg-b"><b>鉴定方：国玉检测（广东）· 不参与出价</b><span>报告 GY-20260721-0882 · <span style="color:var(--jade);cursor:pointer;font-weight:600;" onclick="go('s-report')">查看鉴定报告 ›</span></span></div>
+        <div class="sg-b"><b>鉴定方：国玉检测（广东）· 不参与出价</b><span>报告 <span id="rc-rep">GY-20260721-0882</span> · <span style="color:var(--jade);cursor:pointer;font-weight:600;" onclick="goRecheckReport()">查看鉴定报告 ›</span></span></div>
       </div>
     </div>
     <div class="card">
-      <div class="card-hd"><div class="sec-title" style="margin-bottom:0;">鉴定结论摘要</div><span class="hd-more" onclick="go('s-report')">完整报告 ›</span></div>
+      <div class="card-hd"><div class="sec-title" style="margin-bottom:0;">鉴定结论摘要</div><span class="hd-more" onclick="goRecheckReport()">完整报告 ›</span></div>
       <!-- 摘要随订单渲染，数据在 RECHECK_REPORTS。头部换了单而摘要不换，会在同一屏里
            出现「冰种手镯 ＋ 紫罗兰珠串的结论」，比原来整屏写死更糟 -->
       <div class="rp-kv" id="rc-kv">
@@ -2337,7 +2394,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <div class="rp-flaw" id="rc-flaw">瑕疵披露：第 7 颗珠有一处 <b>3mm 石纹</b>（开箱录像 02:14 处标注）</div>
       <div class="trace-card" style="margin-top:12px;">
         <div class="tc" id="rc-video" onclick="toast('开箱核验录像回放（演示）· 02:14 石纹特写 · 对您免费')"><div class="i"><svg class="ico"><use href="#i-video"/></svg></div><b>开箱录像</b><span>免费回看</span></div>
-        <div class="tc" onclick="go('s-report')"><div class="i"><svg class="ico"><use href="#i-report"/></svg></div><b>鉴定报告</b><span>第三方出具</span></div>
+        <div class="tc" onclick="goRecheckReport()"><div class="i"><svg class="ico"><use href="#i-report"/></svg></div><b>鉴定报告</b><span>第三方出具</span></div>
         <div class="tc" onclick="toast('查看瑕疵实拍高清图（演示）')"><div class="i"><svg class="ico"><use href="#i-search"/></svg></div><b>瑕疵实拍</b><span>3张</span></div>
       </div>
     </div>
@@ -2464,31 +2521,39 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
          原先是「五格＋金色在售条＋绿色待到账条」：三套视觉语言并列，
          且订单页与「我的」曾用「寄售中／在售中」两个词指同一件货。分组后与订单页的
          「回收单／寄售单」类型筛选同源，点“查看全部”直接带类型跳过去。
-         「在售中」仍是一层可达（2026-08-07 定的“不能埋三层”未破），
-         挂价／浏览量等经营数据下沉到 ⑩ 寄售管理 -->
+         ⚠️ 2026-08-13 改：两组统一为「待处理／进行中／已完成／已取消／售后」五格，
+         全部走 goOrders(段, 类型)，与订单页六段（除“全部”）一一对应。
+         **这推翻了 2026-08-07 定的「在售中一层可达」**——「在售中／待到账」两个直达入口撤回 ⑯ 内部，
+         看在售中改走「我的 → 寄售·进行中 → 卡片 → ⑯」，多一层。
+         原因：两组原来用两套划分（回收全是状态段，寄售混了 2 个功能页入口），
+         结果两组各漏一段——回收缺「已取消」（2 张卡进不去）、寄售缺「进行中」
+         （「鉴定中」那张单在「我的」里根本没有入口）。件数也因此对不上：
+         回收四格合计 10 件、实际 12 件；寄售五格合计 6 件、实际 7 件。 -->
     <div class="card">
       <div class="card-hd"><div class="sec-title" style="margin-bottom:0;">回收订单</div><span class="hd-more" onclick="goOrders('all','recycle')">查看全部 ›</span></div>
       <div class="me-grid" style="margin-top:10px;">
         <!-- 格子名必须＝订单页的段名，否则点「待确认」落在「待处理」上会对不上（2026-08-13 随 6 段收敛同改）。
-             红点保留在「待处理」上——它含着那单待您确认成交的。件数按演示卡片实数：
-             回收 待处理4／进行中3／已完成2／售后1（原来写「售后 0 件」，而列表里就有一张先行赔付中，是错的）。 -->
+             红点保留在「待处理」上——它含着那单待您确认成交的。
+             件数＝该段真实卡片数：4／4／2／2／1，合计 13＝回收单总数（进行中含新增的「估价中」1 件）。 -->
         <div class="mg" onclick="goOrders('pending','recycle')"><div class="i"><svg class="ico"><use href="#i-clock"/></svg><i class="dot">1</i></div><b>待处理</b><span class="badge-n">4件</span></div>
-        <div class="mg" onclick="goOrders('doing','recycle')"><div class="i"><svg class="ico"><use href="#i-truck"/></svg></div><b>进行中</b><span>3件</span></div>
+        <div class="mg" onclick="goOrders('doing','recycle')"><div class="i"><svg class="ico"><use href="#i-truck"/></svg></div><b>进行中</b><span>4件</span></div>
         <div class="mg" onclick="goOrders('done','recycle')"><div class="i"><svg class="ico"><use href="#i-check"/></svg></div><b>已完成</b><span>2件</span></div>
+        <div class="mg" onclick="goOrders('cancelled','recycle')"><div class="i"><svg class="ico"><use href="#i-inbox"/></svg></div><b>已取消</b><span>2件</span></div>
         <div class="mg" onclick="goOrders('aftersale','recycle')"><div class="i"><svg class="ico"><use href="#i-return"/></svg></div><b>售后</b><span>1件</span></div>
       </div>
     </div>
     <div class="card">
       <div class="card-hd"><div class="sec-title" style="margin-bottom:0;">寄售订单</div><span class="hd-more" onclick="goOrders('all','consign')">查看全部 ›</span></div>
       <div class="me-grid" style="margin-top:10px;">
-        <!-- 「在售中」「待到账」不再是订单页的段，但它们是卖家最关心的两件事，
-             所以改为直接进 ⑯ 寄售管理的对应态——那儿才有挂价、浏览量与三段结款进度。
-             跳的是功能页不是筛选段，因此不存在「格子名与段名对不上」的问题。
-             2026-08-07 定的「在售中一层可达」仍然成立。 -->
+        <!-- 与回收组同构、同源于订单页六段。「进行中 3 件」＝鉴定中 1 ＋ 在售中 1 ＋ 已售出待确认 1，
+             其中「鉴定中」那张原来在「我的」里没有任何入口。
+             件数＝该段真实卡片数：2／3／1／0／1，合计 7＝寄售单总数。
+             「已取消 0 件」如实写 0，不隐藏——隐藏会让两组格数又不一致。 -->
         <div class="mg" onclick="goOrders('pending','consign')"><div class="i"><svg class="ico"><use href="#i-clock"/></svg></div><b>待处理</b><span>2件</span></div>
-        <div class="mg" onclick="goConsign('live')"><div class="i"><svg class="ico"><use href="#i-tag"/></svg><i class="dot">1</i></div><b>在售中</b><span class="badge-n">1件</span></div>
-        <div class="mg" onclick="goConsign('sold')"><div class="i"><svg class="ico"><use href="#i-money"/></svg></div><b>待到账</b><span>1件</span></div>
+        <div class="mg" onclick="goOrders('doing','consign')"><div class="i"><svg class="ico"><use href="#i-tag"/></svg></div><b>进行中</b><span>3件</span></div>
         <div class="mg" onclick="goOrders('done','consign')"><div class="i"><svg class="ico"><use href="#i-check"/></svg></div><b>已完成</b><span>1件</span></div>
+        <div class="mg" onclick="goOrders('cancelled','consign')"><div class="i"><svg class="ico"><use href="#i-inbox"/></svg></div><b>已取消</b><span>0件</span></div>
+        <div class="mg" onclick="goOrders('aftersale','consign')"><div class="i"><svg class="ico"><use href="#i-return"/></svg></div><b>售后</b><span>1件</span></div>
       </div>
     </div>
     <div class="card">
@@ -2569,6 +2634,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
     </div>
   </div>
+  </div>
   <!-- tab 栏已摘除：底部五格为 首页/门店/免费估价/商城/我的，订单与消息都不是 tab，
        它们从“我的”进入、靠返回退出。旧版在此挂 tab 栏是自营时期的遗留 -->
 </div>
@@ -2622,7 +2688,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
       <!-- 报告公示状态：寄售的鉴定报告要随商品页向买家公示，买家敢买二手翡翠的唯一依据就是它。
            卖家需要知道自己的报告有没有挂出去 -->
-      <div class="bar-live" onclick="go('s-report')"><svg class="ico"><use href="#i-report"/></svg> 鉴定报告<b style="margin-left:4px;">已向买家公示</b><span style="margin-left:auto;font-size:10.5px;font-weight:600;">查看报告 ›</span></div>
+      <div class="bar-live" onclick="goReport('GY-20260713-0219')"><svg class="ico"><use href="#i-report"/></svg> 鉴定报告<b style="margin-left:4px;">已向买家公示</b><span style="margin-left:auto;font-size:10.5px;font-weight:600;">查看报告 ›</span></div>
     </div>
     
     <div class="card">
@@ -2657,7 +2723,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     <div class="vip-icons" id="vip-icons"></div>
     <div class="vip-notice" id="vip-notice"></div>
   </div>
-  <div class="vip-paybar"><button class="btn" id="vip-pay" onclick="toast('演示：调起微信支付开通翠友会员')">9.9 立即支付</button></div>
+  <div class="vip-paybar"><button class="btn" id="vip-pay" onclick="vipPay()">9.9 立即支付</button></div>
 </div>
 
 <!-- ============ S13 优惠券 ============ -->
@@ -2708,17 +2774,17 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
             <button class="btn btn-main" onclick="goForm('cash','')">免费估价</button>
     </div>
     <div id="certs-box">
-    <div class="cert-card" onclick="go('s-report')">
+    <div class="cert-card" onclick="goReport('GY-20260715-0337')">
       <div class="cpic"><div class="jade-drop" style="width:36px;height:44px;"></div></div>
       <div class="cb"><b>翡翠飘绿佛公吊坠</b><div class="no">鉴定报告 GY-20260715-0337（国玉检测）· 一物一码 SY-260715-T8ZV5HN2 · 07-15 现款成交</div>
         <div class="tags"><span class="tag">鉴定报告 ›</span><span class="tag">GTC 证书</span><span class="tag gold">天然A货</span></div></div>
     </div>
-    <div class="cert-card" onclick="go('s-report')">
+    <div class="cert-card" onclick="goReport('GY-20260708-1182')">
       <div class="cpic"><div class="jade-drop" style="width:34px;height:42px;"></div></div>
       <div class="cb"><b>翡翠糯冰福瓜吊坠</b><div class="no">鉴定报告 GY-20260708-1182（国玉检测）· 一物一码 SY-260708-P5NR8KD4 · 07-08 寄售成交</div>
         <div class="tags"><span class="tag">鉴定报告 ›</span><span class="tag gold">糯冰种</span></div></div>
     </div>
-    <div class="cert-card" onclick="go('s-report')">
+    <div class="cert-card" onclick="goReport('GY-20260605-0921')">
       <div class="cpic"><div class="jade-ring" style="width:44px;height:44px;--ph-bg:#EDF5F0;"></div></div>
       <div class="cb"><b>翡翠白底青挂件</b><div class="no">鉴定报告 GY-20260605-0921（驻店出具）· 一物一码 SY-260605-K4W7QZ3M · 06-05 驻店门店当面成交</div>
         <div class="tags"><span class="tag">鉴定报告 ›</span><span class="tag gold">天然A货</span></div></div>
@@ -2814,10 +2880,13 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
   <div class="navbar"><span class="back" onclick="back()">‹</span>新增地址</div>
   <div class="scroll pg-gray">
     <div class="field-card">
-      <div class="field"><span class="lb">姓名</span><span class="val ph">请输入您的姓名</span></div>
+      <!-- 姓名与详细地址改为真正可输入：原来三个字段都是静态占位，点确认必然成功，
+           且无论填什么都写死追加「南山区科技园 XX 大厦 X 座」。"表单校验缺失"没法演示，
+           保存的也不是用户填的值。省市区在真实产品里是选择器，这里点一下回填 -->
+      <div class="field"><span class="lb">姓名</span><span class="val edit" id="ad-name" contenteditable="true" data-ph="请输入您的姓名"></span></div>
       <div class="field"><span class="lb">手机号码</span><span class="val strong">136****3827</span></div>
-      <div class="field" onclick="toast('演示：点击定位选择省市区')"><span class="lb">省市区</span><span class="val ph">请点击定位选择地区</span><span class="loc"><svg class="ico"><use href="#i-pin"/></svg> 定位</span></div>
-      <div class="field"><span class="lb">详细地址</span><span class="val ph">请输入详细地址</span></div>
+      <div class="field" onclick="pickRegion()"><span class="lb">省市区</span><span class="val" id="ad-region"><span class="ph">请点击定位选择地区</span></span><span class="loc"><svg class="ico"><use href="#i-pin"/></svg> 定位</span></div>
+      <div class="field"><span class="lb">详细地址</span><span class="val edit" id="ad-detail" contenteditable="true" data-ph="请输入详细地址"></span></div>
     </div>
     <div class="field-card">
       <div class="field"><span class="lb" style="width:auto;flex:1;">设置默认收货地址</span><div class="switch" onclick="this.classList.toggle('on')"></div></div>
@@ -2869,7 +2938,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     </div>
     <div class="field-card">
       <div class="field" onclick="go('s-agreement')"><span class="i" style="margin-right:10px;"><svg class="ico"><use href="#i-file"/></svg></span><span class="lb" style="width:auto;flex:1;">协议与规则</span><span class="arrow">›</span></div>
-      <div class="field" onclick="toast('久久金管家·翡翠回收 v2.4（演示）')"><span class="i" style="margin-right:10px;">ℹ️</span><span class="lb" style="width:auto;flex:1;">关于久久金管家·翡翠回收</span><span class="arrow">›</span></div>
+      <div class="field" onclick="toast('久久金管家·翡翠回收 v2.4（演示）')"><span class="i" style="margin-right:10px;"><svg class="ico"><use href="#i-info"/></svg></span><span class="lb" style="width:auto;flex:1;">关于久久金管家·翡翠回收</span><span class="arrow">›</span></div>
       <div class="field set-danger" onclick="toast('演示：注销账号需二次确认')"><span class="i" style="margin-right:10px;"><svg class="ico"><use href="#i-alert"/></svg></span><span class="lb set-danger" style="width:auto;flex:1;">注销账号</span><span class="arrow">›</span></div>
     </div>
     <div class="set-ver">久久金集团出品</div>
@@ -2891,7 +2960,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     <div class="faq-entry">
       <div class="fe" onclick="go('s-chat')"><div class="i"><svg class="ico"><use href="#i-chat"/></svg></div><div class="n">在线客服</div></div>
       <div class="fe" onclick="go('s-service')"><div class="i"><svg class="ico"><use href="#i-phone"/></svg></div><div class="n">电话客服</div></div>
-      <div class="fe" onclick="toast('演示：提交问题反馈')"><div class="i"><svg class="ico"><use href="#i-edit"/></svg></div><div class="n">问题反馈</div></div>
+      <div class="fe" onclick="go('s-feedback')"><div class="i"><svg class="ico"><use href="#i-edit"/></svg></div><div class="n">问题反馈</div></div>
     </div>
     <div class="faq-cats">
       <div class="fc on" data-cat="all" onclick="faqCat(this,'all')">猜你想问</div><div class="fc" data-cat="online" onclick="faqCat(this,'online')">线上回收</div><div class="fc" data-cat="store" onclick="faqCat(this,'store')">门店回收</div><div class="fc" data-cat="consign" onclick="faqCat(this,'consign')">寄售帮卖</div><div class="fc" data-cat="rule" onclick="faqCat(this,'rule')">回收须知</div>
@@ -3019,13 +3088,15 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     </div>
     <div class="carry">
       <div class="sec-title" style="margin:0;">携带物品信息</div>
-      <div class="cw">注：未满 18 周岁需监护人陪同，并携带监护人身份相关信息</div>
+      <!-- 原写「未满 18 周岁需监护人陪同」＝允许未成年人到店交易，与四份协议
+           「交易需年满 18 周岁」「本产品不服务未满 18 周岁用户」直接冲突。门店店员照页面执行 -->
+      <div class="cw">注：交易须<b>年满 18 周岁</b>并完成实名认证，未成年人不予受理</div>
       <div class="ci"><span class="st">✱</span><div><b>货品：翡翠手镯 / 吊坠 / 珠串 / 挂件 / 摆件等</b><u>建议携带对应鉴定证书及购买发票，有助于卖出更高价</u></div></div>
       <div class="ci" id="carry-id"><span class="st">✱</span><div><b>携带身份证原件</b><u>未携带原件请牢记身份证号码，用于现场实名认证</u></div></div>
       <div class="ci" id="carry-bank"><span class="st">✱</span><div><b>收款银行卡卡号</b><u>成交后由回收机构直接打款到该账户</u></div></div>
     </div>
     <div class="agree"><div class="ck off" onclick="toggleAgree(this)"></div>同意<a onclick="go('s-agr-platform')">《平台服务协议》</a><a onclick="go('s-agr-recycle')">《回收交易协议》</a><a onclick="go('s-agr-privacy')">《隐私政策》</a></div>
-    <div class="fixed-btn" style="padding-top:0;"><button class="btn btn-main" id="book-submit" onclick="if(document.body.classList.contains('demo-guest')){goLogin();}else{submitWithAgree(this,'s-book-ok','',1);}">立即预约</button></div>
+    <div class="fixed-btn" style="padding-top:0;"><button class="btn btn-main" id="book-submit" onclick="submitWithAgree(this,'s-book-ok','',1)">立即预约</button></div>
     <div class="tip-note" style="text-align:center;" id="book-foot">鉴定报告<b>免费出具</b> · 到店<b>仅支持现款回收</b>，寄售请选择邮寄或交至代收点</div>
   </div>
 </div>
@@ -3062,7 +3133,9 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     </div>
     <div class="carry" style="margin:0 14px 12px;">
       <div class="sec-title" style="margin:0;">携带物品信息</div>
-      <div class="cw">注：未满 18 周岁需监护人陪同，并携带监护人身份相关信息</div>
+      <!-- 原写「未满 18 周岁需监护人陪同」＝允许未成年人到店交易，与四份协议
+           「交易需年满 18 周岁」「本产品不服务未满 18 周岁用户」直接冲突。门店店员照页面执行 -->
+      <div class="cw">注：交易须<b>年满 18 周岁</b>并完成实名认证，未成年人不予受理</div>
       <div class="ci"><span class="st">✱</span><div><b>货品：翡翠手镯 / 吊坠 / 珠串 / 挂件 / 摆件等</b><u>建议携带对应鉴定证书及购买发票，有助于卖出更高价</u></div></div>
       <div class="ci"><span class="st">✱</span><div><b>携带身份证原件</b><u>未携带原件请牢记身份证号码，用于现场实名认证</u></div></div>
       <div class="ci"><span class="st">✱</span><div><b>收款银行卡卡号</b><u>成交后由回收机构直接打款到该账户</u></div></div>
@@ -3082,8 +3155,10 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
   <div class="scroll pg-gray">
     <div class="card">
       <div class="sec-title" style="margin-bottom:8px;">认证信息<span style="color:var(--red);font-size:12px;font-weight:600;">（必填）</span></div>
-      <div class="auth-row" onclick="go('s-realname')"><span class="st">✱</span>实名认证<span class="v">去认证 ›</span></div>
-      <div class="auth-row" onclick="toast('请先完成实名认证')"><span class="st">✱</span>收款账户<span class="v" style="color:var(--red);">未实名，请先进行实名认证 ›</span></div>
+      <!-- 演示账号全站是「已实名 ＋ 已绑卡」（㉗ 2026-06-01 完成实名、㉖ 招商银行 8837、
+           ㉑ 与 ⑦ 都写已完成）。本屏原来整屏按「未实名」渲染，从那几屏点进来直接自相矛盾 -->
+      <div class="auth-row" onclick="go('s-realname')"><span class="st">✱</span>实名认证<span class="v">已完成 ✓</span></div>
+      <div class="auth-row" onclick="go('s-bankcards')"><span class="st">✱</span>收款账户<span class="v">招商银行(8837) ›</span></div>
     </div>
     <div class="card">
       <div class="sec-title">温馨提示</div>
@@ -3093,12 +3168,13 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
         <li>客服热线 400-965-2699。</li>
       </ol>
     </div>
-    <div class="fixed-btn"><button class="btn disabled" onclick="toast('请先完成实名认证与收款账户绑定')">确定</button></div>
+    <!-- 两项都已齐全，按钮就不该是 disabled；也不写「确定」这种不说明结果的词 -->
+    <div class="fixed-btn"><button class="btn btn-main" onclick="back()">信息已齐全 · 返回</button></div>
   </div>
   <div class="auth-mask" id="auth-mask" onclick="closeAuthTip()">
     <div class="auth-pop" onclick="event.stopPropagation()">
       <b>温馨提示</b>
-      <p>“确认打款”前需要实名并确认收款方式，建议您现在完成认证，方便后续回收打款。</p>
+      <p>回收打款前须完成实名认证并绑定收款账户。您的认证信息<b>已齐全</b>，到店后可直接办理。</p>
       <button class="btn btn-main" style="height:42px;font-size:14px;" onclick="closeAuthTip()">我知道了</button>
     </div>
   </div>
@@ -3149,7 +3225,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <h4>一、报价机制（重要）</h4>
       <p>1. <b>AI 初估区间</b>：上传照片视频后由算法给出的参考区间，<b>不构成任何一方的报价，也不构成要约</b>。</p>
       <p>2. <b>鉴定报告</b>：货品入质检中心后，由经平台审核的<b>第三方鉴定公司</b>对实物出具。鉴定公司<b>只出具报告、不参与出价</b>，其报告是各回收机构报价的<b>唯一共同依据</b>。</p>
-      <p>3. <b>机构报价</b>：鉴定报告出具后，平台就同一货品向<b>不少于两家</b>回收机构发起询价；各回收机构基于<b>同一份报告</b>各自出价、互相不可见；本轮结束后一次性公示全部报价与机构名称，<b>有效期 72 小时</b>。<b>全程只报一次价——您选定的报价即为成交价，机构不得再行调整</b>。<b>平台不出价、不碰交易价、不为任何一家机构的报价背书</b>；机构之间的价差平台不作解释。</p>
+      <p>3. <b>机构报价</b>：鉴定报告出具后，平台就同一货品向<b>不少于两家</b>回收机构发起询价；各回收机构基于<b>同一份报告</b>各自出价、互相不可见；本轮结束后一次性公示全部报价；<b>机构名称于您选定其中一家并进入确认页时披露</b>（此前以代号列示，理由见《平台服务协议》脱敏条款），<b>有效期 72 小时</b>。<b>全程只报一次价——您选定的报价即为成交价，机构不得再行调整</b>。<b>平台不出价、不碰交易价、不为任何一家机构的报价背书</b>；机构之间的价差平台不作解释。</p>
       <p>4. <b>报价须经您在线确认后方可成交</b>。您不接受任何一家报价的，可申请寄回；亦可转为委托寄售，货品留在平台的<b>不产生任何运费</b>。72 小时内未确认的，平台自动安排寄回。</p>
       <p>5. <b>运费承担规则</b>：去程运费由您承担，<b>选择快递上门取件的，在提交预约时于本小程序内支付</b>（自主寄件的运费由您在快递网点支付，交至代收点的去程不收费用）。<b>回程运费一律由您承担</b>（多件可合并为一个包裹寄回，<b>运费只收取一次</b>，超过 20 件的部分每件加收 ¥1；鉴定费按件计收），与不成交的原因无关（含对报价不满意而拒绝、72 小时逾期未确认的自动寄回、鉴定结论为非天然 A 货或经处理、报价出具前主动取消等全部情形）；<b>货品尚未交付平台的，取消不产生任何费用</b>。<b>保价费由平台承担。</b></p>
       <p>6. <b>多件打包交付</b>：通过「直接交货」一次寄出多件的，去程运费按<b>一个包裹收取一次</b>；到货开箱清点后<b>按实际件数拆为多张独立订单</b>，各自出具鉴定报告、各自判定收货标准与变现方式。<b>实际到货件数与您申报不一致的，以开箱清点录像为准</b>，平台在拆单后即时通知您。</p>
@@ -3513,14 +3589,19 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <div class="m">一物一码 SY-260713-3QMF7WXB · 在架 8 天 · 浏览 326 · 收藏 18</div>
     </div>
     <div class="sell-entry" onclick="goForm('consign','')">
-      <div class="se-b"><b>本件由翠友委托寄售</b><span>挂价由卖家自定，售出后预计到手 ¥3,240</span></div>
+      <!-- 原副文案是「挂价由卖家自定，售出后预计到手 ¥3,240」——那是**这一件的卖家分成**，
+           放在买家也能看到的商品页上，等于把该卖家的到手价和平台 10% 费率一起公开。
+           2026-08-13 业务方确认：到手价只对卖家可见。
+           改为一条买家真正需要的告知：对手方是个人卖家、不是平台自营，而敢买的依据（报告与录像）就在同屏。
+           全站复扫：其余「预计到手」都在卖家自己的页面（⑯⑲）或是泛指（⑰ 营销位、协议、FAQ），不涉及具体金额。 -->
+      <div class="se-b"><b>本件由翠友委托寄售</b><span>非平台自营 · 鉴定报告与开箱录像已随页公示</span></div>
       <span class="se-go">寄售我的翡翠</span>
     </div>
 
     <!-- 鉴定报告公示：买家所见即报告所载。瑕疵字段必须一并公示，
          这正是回流“白玉无事牌破碎划痕未披露”那类投诉的功能答案 -->
     <div class="rep-card">
-      <div class="sec-title" style="margin-bottom:6px;">鉴定报告<span style="margin-left:auto;font-size:11px;font-weight:400;color:var(--jade);" onclick="go('s-report')">查看完整报告 ›</span></div>
+      <div class="sec-title" style="margin-bottom:6px;">鉴定报告<span style="margin-left:auto;font-size:11px;font-weight:400;color:var(--jade);" onclick="goReport('GY-20260713-0219')">查看完整报告 ›</span></div>
       <div class="tip-note" style="padding:0 0 6px;">国玉检测（广东）出具 · GY-20260713-0219</div>
       <div class="rep-kv">
         <div class="kv">种水<b>冰糯种</b></div>
@@ -3562,7 +3643,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
   <div class="scroll pg-gray">
     <div class="rp-head">
       <div class="rh-t">翡翠鉴定报告</div>
-      <div class="rh-s">GY-20260713-0219 · 2026-07-13 出具</div>
+      <div class="rh-s" id="rp-no">GY-20260713-0219 · 2026-07-13 出具</div>
     </div>
     <div class="rp-seal">
       <div class="rs-top">
@@ -3576,15 +3657,9 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     </div>
     <div class="card">
       <div class="sec-title">鉴定结论</div>
-      <div class="rp-row"><span class="k">品名</span><span class="v">翡翠方牌挂件（18K 金镶嵌）</span></div>
-      <div class="rp-row"><span class="k">鉴定结论</span><span class="v">天然翡翠 A 货 · 未经处理</span></div>
-      <div class="rp-row"><span class="k">种水</span><span class="v">冰糯种</span></div>
-      <div class="rp-row"><span class="k">颜色</span><span class="v">阳绿飘色，色带集中于牌面上部</span></div>
-      <div class="rp-row"><span class="k">透明度</span><span class="v">半透明</span></div>
-      <div class="rp-row"><span class="k">总重</span><span class="v">38.62 g<span style="font-size:10.5px;color:var(--ink3);font-weight:400;">（质检中心逐件称重，防调包基准值）</span></span></div>
-      <div class="rp-row"><span class="k">尺寸</span><span class="v">42.1 × 26.8 × 7.3 mm</span></div>
-      <div class="rp-row"><span class="k">瑕疵</span><span class="v"><em>右下角一处 2mm 石纹（P4 标注）；背面轻微棉絮</em></span></div>
-      <div class="rp-row"><span class="k">附件</span><span class="v">原装锦盒、GTC 证书（随货登记）</span></div>
+      <!-- 九个字段随报告号渲染，数据见 REPORTS。原来整屏写死在方牌那一份上，
+           而 ④⑤⑦⑧⑯⑱㉔ 七处入口各引不同的报告号，点进来看到的都是别人的货 -->
+      <div id="rp-rows"></div>
     </div>
     <div class="card">
       <div class="sec-title">佐证材料</div>
@@ -3728,7 +3803,10 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <div class="rp-row"><span class="k">报价依据</span><span class="v">鉴定报告 GY-20260721-0882（国玉检测出具）</span></div>
       <div class="rp-row"><span class="k">报价性质</span><span class="v">依据上述报告出具，<b>选定后即为成交价，不会再变</b></span></div>
       <div class="rp-row"><span class="k">付款方式</span><span class="v">成交后由本机构<b>直接打款</b>至您的收款账户，24 小时内</span></div>
-      <div class="rp-row"><span class="k">机构名称</span><span class="v" style="color:var(--ink3);font-weight:400;">货品入库后在确认页披露</span></div>
+      <!-- 原写「货品入库后在确认页披露」，是旧匿名判据（"货在谁手里"）的残留：
+           ⑤ 出现的前提就是货已入库、报告已出具，按那句话现在就该披露了。
+           现行判据＝是否已选定某一家并进入最终确认（PRD 4.12），协议一-3 已同步改口径 -->
+      <div class="rp-row"><span class="k">机构名称</span><span class="v" style="color:var(--ink3);font-weight:400;">您选定该机构后在确认页披露</span></div>
     </div>
     <div class="card">
       <div class="sec-title">这家机构的守约记录</div>
@@ -3761,6 +3839,11 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <p>1. 平台<b>做</b>：审核并准入第三方鉴定公司与回收机构、收取并管理其保证金；组织竞价与撮合；在质检中心对货品进行签收、开箱录像、称重、一物一码入库与在库管理；校验机构举证材料是否齐备；核验机构打款到账；提供客服、结论解释与沟通中转；对机构履约进行 SLA 评分、暂停与淘汰。</p>
       <p>2. 平台<b>不做</b>：<b>不出价、不碰交易价、不出具鉴定结论、不设自有鉴定师</b>；不解释机构之间的价差，也不为任何一家机构的报价背书；<b>不代收代付您的货款</b>。</p>
       <p>3. 平台就撮合与服务向<b>机构</b>收取佣金、就寄售在<b>分账环节</b>收取服务费，费率显性公示、<b>成交才收</b>。</p>
+      <!-- 2026-08-13 新增：② 估价表单改为只勾本协议与《隐私政策》（交易协议推到 ⑥⑩ 分叉之后），
+           而原七章里没有任何一条覆盖「提交素材 → AI 初估 → 建单」这一段；
+           「AI 初估不构成报价」当时只写在《回收交易协议》一-1 里，改完就没了依托。此处补总则 -->
+      <p>4. <b>提交素材与建单</b>：您上传照片、视频等素材并提交后，平台即为该货品建立一张订单，用于记录后续的交付、核验与成交过程。素材仅用于估价、鉴定与（选择寄售时）商品页公示。</p>
+      <p>5. <b>AI 初估区间</b>由算法给出，<b>不构成任何一方的报价，也不构成要约</b>，亦不代表最终成交价。<b>具体交易关系</b>（对手方、价格、结算与费用）由您在选定变现方式后另行同意的《翡翠现款回收交易协议》或《翡翠委托寄售交易协议》约定。</p>
       <h4>二、资金链路（合规红线）</h4>
       <p>1. <b>回收款由回收机构直接支付给您</b>；<b>寄售款由持牌支付机构在买家付款瞬间分账直达您的账户</b>。<b>买家款与回收款均不进入平台账户。</b></p>
       <p>2. 平台在<b>核验机构打款到账后</b>方向机构放货。</p>
@@ -3954,9 +4037,19 @@ function toggleGuest(){
   document.getElementById("guestBtn").textContent=on?"◉ 退出未登录预览":"◌ 预览未登录";
 }
 /* ===== 手机号授权 =====
-   小程序里不存在"注册"：进入即静默拿 openid，用户无感。
-   真正要用户点头的只有手机号，而它卡在「提交交货预约」这一步——
-   AI 初估之前要手机号会砍掉大量转化：用户还不知道值多少钱，凭什么给你号码。 */
+   小程序里不存在"注册"：进入即静默拿 openid，用户无感。真正要用户点头的只有手机号。
+   ⚠️ 2026-08-13 前移到「提交估价」这一步。原注释写的是「卡在提交交货预约，AI 初估之前
+      要手机号会砍掉大量转化」——那条只在「② 只做算法查询、不建单」的设计下成立，
+      而本原型 ③ 头部就挂着「回收单 JJH-…· 今天 15:58 提交」，说明 ② 提交即建单；
+      ⑲ 订单页在未登录态又是整屏 guest-state，订单属账号资产。
+      两条合起来：未登录提交＝建了一张查不到、也不知道归谁的单。
+   **口径：凡是产生数据的提交，一律先登录**（②⑩⑫㉚㉒㊲），统一走 needLogin()。
+   代价已知并被接受：登录时点前移会损失一部分「还没看到价就要给号码」的转化。 */
+// 校验在前、登录在后：不能先要手机号，再告诉用户"你还有一张照片没传"
+function needLogin(){
+  if(document.body.classList.contains("demo-guest")){goLogin();return true;}
+  return false;
+}
 /* 登录入口统一走 ⓪：先拿协议同意，再调微信手机号授权。
    两步各司其职——协议是我们要的留痕，手机号是微信要的授权。 */
 let loginFrom="";
@@ -4146,6 +4239,7 @@ function agreeBlocked(btn){
 }
 function submitWithAgree(btn,target,msg,reset){
   if(agreeBlocked(btn))return;
+  if(needLogin())return;
   // reset=1 表示 target 是终点页（提交成功／成交），跳过去时把前面的表单页清出返回栈
   const jump=reset?goDone:go;
   if(msg){toast(msg);setTimeout(()=>jump(target),900);return;}
@@ -4169,12 +4263,8 @@ function updateFormIntent(){
   // 首页带来的 saleIntent 只作 ③ 分叉双卡的预选值，不锁死。
   syncDeliverRule();
   pickFork(saleIntent==="consign"?"consign":"cash");
-  const a=document.getElementById("form-agree-1");
-  if(a){
-    const consign=saleIntent==="consign";
-    a.textContent=consign?"《寄售交易协议》":"《回收交易协议》";
-    a.setAttribute("onclick","go('"+(consign?"s-agr-consign":"s-agr-recycle")+"')");
-  }
+  // 原来这里按 saleIntent 切换 ② 上那条交易协议链接；② 已不再勾交易协议，该元素随之删除。
+  // ⚠️ 删元素时要连着删引用它的 JS——本文件在 ⑩ 的 mailin-intent-tip 上栽过一次（静默 TypeError）
 }
 function goForm(sale,deliver){
   saleIntent=sale||"cash";
@@ -4186,6 +4276,104 @@ function goForm(sale,deliver){
 // 首页/券包带来的变现意向只用来“预选路线”，不锁死，两条路在比价页始终可切换。
 // （旧版这里写的是“已为您推荐左侧/右侧方案”，指的是 v1 的双卡布局；那两张卡在重画 S4 时已删，
 //   这句话此后一直指着不存在的东西）
+/* ===== ⑨ 鉴定报告：按报告号渲染 =====
+   ⚠️ 演示值。原来整屏写死在「冰糯种阳绿方牌 GY-20260713-0219」这一份上，
+   而 ④⑤⑦⑧⑯⑱㉔ 七处各引不同的报告号，点「查看报告」看到的都是别人的货。
+   另修一处编号撞车：紫罗兰珠串原先与冰种手镯共用 GY-20260721-0882，已拆出 -0447。 */
+const REPORTS={
+  'GY-20260721-0882':{date:'2026-07-21',goods:'翡翠手镯（无镶嵌）',seed:'冰种',
+    color:'飘绿，色带沿镯身分布',trans:'半透明',weight:'62.40 g',size:'圈口 56.5 · 条宽 12.8 · 厚 7.6 mm',
+    flaw:'内圈一处 4mm 石纹（P3 标注）',attach:'无'},
+  'GY-20260721-0447':{date:'2026-07-21',goods:'翡翠珠串（108 颗）',seed:'糯种',
+    color:'紫罗兰，颜色深浅不一',trans:'微透明',weight:'58.30 g',size:'珠径 8.2 mm × 108',
+    flaw:'第 7 颗珠一处 3mm 石纹（P2 标注）',attach:'原装锦盒'},
+  'GY-20260717-0663':{date:'2026-07-17',goods:'翡翠吊坠（福豆 · 无镶嵌）',seed:'糯种',
+    color:'浅豆青',trans:'微透明',weight:'12.05 g',size:'28.4 × 13.2 × 6.8 mm',
+    flaw:'豆身两处棉絮；底部轻微磕口',attach:'无'},
+  'GY-20260715-0337':{date:'2026-07-15',goods:'翡翠吊坠（佛公 · 无镶嵌）',seed:'冰糯种',
+    color:'飘绿',trans:'半透明',weight:'38.62 g',size:'36.5 × 24.1 × 8.0 mm',
+    flaw:'背面一处 2mm 石纹（P3 标注）',attach:'原装锦盒'},
+  'GY-20260713-0219':{date:'2026-07-13',goods:'翡翠方牌挂件（18K 金镶嵌）',seed:'冰糯种',
+    color:'阳绿飘色，色带集中于牌面上部',trans:'半透明',weight:'38.62 g',size:'42.1 × 26.8 × 7.3 mm',
+    flaw:'右下角一处 2mm 石纹（P4 标注）；背面轻微棉絮',attach:'原装锦盒、GTC 证书（随货登记）'},
+  'GY-20260708-1182':{date:'2026-07-08',goods:'翡翠吊坠（福瓜 · 无镶嵌）',seed:'糯冰种',
+    color:'淡绿飘花',trans:'半透明',weight:'15.80 g',size:'32.0 × 15.6 × 7.1 mm',
+    flaw:'瓜蒂处轻微棉絮',attach:'无'},
+  'GY-20260722-1054':{date:'2026-07-22',goods:'翡翠手镯（无镶嵌）',seed:'糯冰种',
+    color:'飘阳绿',trans:'半透明',weight:'59.10 g',size:'圈口 56.5 · 条宽 12.2 · 厚 7.1 mm',
+    flaw:'外壁一处 3mm 石纹',attach:'无（驻店当面出具）'},
+  'GY-20260605-0921':{date:'2026-06-05',goods:'翡翠挂件（白底青 · 无镶嵌）',seed:'糯种',
+    color:'白底青，绿色呈块状',trans:'不透明至微透明',weight:'21.35 g',size:'34.8 × 20.2 × 6.4 mm',
+    flaw:'左上一处 3mm 石纹',attach:'无（驻店当面出具）'}
+};
+const REPORT_DEF='GY-20260713-0219';
+let reportNo=REPORT_DEF;
+function renderReport(){
+  const r=REPORTS[reportNo]||REPORTS[REPORT_DEF];
+  const set=function(id,fn){const e=document.getElementById(id);if(e)fn(e);};
+  set('rp-no',function(e){e.textContent=reportNo+' · '+r.date+' 出具';});
+  set('rp-rows',function(e){
+    const row=function(k,v){return '<div class="rp-row"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>';};
+    e.innerHTML=row('品名',r.goods)
+      +row('鉴定结论','天然翡翠 A 货 · 未经处理')
+      +row('种水',r.seed)+row('颜色',r.color)+row('透明度',r.trans)
+      +row('总重',r.weight+'<span style="font-size:10.5px;color:var(--ink3);font-weight:400;">（质检中心逐件称重，防调包基准值）</span>')
+      +row('尺寸',r.size)
+      +row('瑕疵','<em>'+r.flaw+'</em>')
+      +row('附件',r.attach);
+  });
+}
+// 所有「查看报告」入口都必须带报告号，否则七处看到的是同一份别人的货
+function goReport(no){reportNo=REPORTS[no]?no:REPORT_DEF;renderReport();go('s-report');}
+// ⑦ 与 ⑧ 的报告号跟着当前那一单走
+function goRecheckReport(){const rp=RECHECK_REPORTS[recheck.no]||{};goReport(rp.rep);}
+function goDetailReport(){const o=ORDERS[detailNo]||{};goReport(o.rep);}
+/* ===== ② 素材必传校验 =====
+   四格默认未传，点一下即填充（模拟拍照/上传）。未传齐就提交＝拦下并高亮缺的那一格。
+   顺序：素材 → 协议 → 登录。不能反过来先要手机号，再告诉用户还差一张照片。 */
+function fillCell(el){
+  if(el.classList.contains('filled')){
+    toast('演示：预览 / 重新'+(el.dataset.kind==='video'?'拍摄':'上传'));return;
+  }
+  el.classList.add('filled');
+  const play=el.dataset.kind==='video'?'<span class="play">▶</span>':'';
+  el.innerHTML='<div class="fill-bg"><div class="jade-ring" style="width:44px;height:44px;--ph-bg:#DFF0E7;"></div>'
+    +play+'</div><em>'+el.dataset.lab+'</em>';
+}
+function submitForm(btn){
+  const miss=[...document.querySelectorAll('#s-form .up-cell.need')].filter(function(c){return !c.classList.contains('filled');})[0];
+  if(miss){
+    toast('请先补齐必传的视频与三视图');
+    miss.scrollIntoView({behavior:'smooth',block:'center'});
+    miss.classList.remove('flash');void miss.offsetWidth;miss.classList.add('flash');
+    return;
+  }
+  if(agreeBlocked(btn))return;
+  if(needLogin())return;
+  goAi();
+}
+/* ===== ③ 两态：估价中 / 已出结果 ===== */
+function setAiState(st){
+  const p=(st==='pending');
+  const set=function(id,fn){const e=document.getElementById(id);if(e)fn(e);};
+  set('ai-pending',  function(e){e.style.display=p?'':'none';});
+  set('ai-price',    function(e){e.style.display=p?'none':'';});
+  set('ai-fork-card',function(e){e.style.display=p?'none':'';});   // 结果没出来，无从选变现方式
+  set('ai-step1',function(e){
+    e.className='stepv '+(p?'doing':'done');
+    e.querySelector('.dot').textContent=p?'●':'✓';
+    e.querySelector('b').textContent=p?'AI 初估中':'AI 初估完成';
+    e.querySelector('span').textContent=p?'算法识别中，约 3 分钟出参考区间':'今天 16:01 · 算法给出参考区间，不构成报价';
+  });
+  set('ai-step2',function(e){
+    e.className='stepv '+(p?'todo':'doing');
+    e.querySelector('.dot').textContent=p?'2':'●';
+  });
+}
+// ② 提交后：先落估价中，演示环境 2.5 秒后出结果（真实为约 3 分钟 ＋ 微信通知）
+function goAi(){go('s-ai');setAiState('pending');setTimeout(function(){setAiState('done');},2500);}
+// ⑲「估价中」订单卡进来看进度：同样 2.5 秒后出结果，避免停在一个不会动的骨架屏上
+function goAiPending(){goAi();}
 /* ===== ③ 变现方式分叉 =====
    必须在竞价之前分叉：想寄售的用户若先跑一轮机构竞价，白耗机构的报价作业
    （准入清单 1-7 的报价 SLA 是采购成本，也是谈佣金的筹码），而寄售挂价的锚
@@ -4257,8 +4445,8 @@ function updateShipSubmit(){
 /* ⑥ 提交：未登录先登录 → 校验勾选 → 上门取件走在线支付去程运费；
    自主寄件（网点实付）与代收点（¥0）不走支付，直接提交 */
 function shipSubmit(btn){
-  if(document.body.classList.contains("demo-guest")){goLogin();return;}
   if(agreeBlocked(btn))return;
+  if(needLogin())return;
   const on=document.querySelector("#s-ship .opt-card.on");
   const way=on?on.dataset.opt:"pickup";
   // exp＝本次实际选的快递。⑥ 与 ⑩ 各有一个选择器（expPick.ship / expPick.mailin），
@@ -4276,6 +4464,7 @@ let shipOk={way:"pickup",intent:"cash",qty:1,exp:"sf"};
    ⑥B 却照旧写着「去程运费 ¥13 已支付」。 */
 function mailinSubmit(btn){
   if(agreeBlocked(btn))return;
+  if(needLogin())return;
   const on=document.querySelector("#s-mailin .ship-way.on");
   const W={pickup:"pickup",self:"self",drop:"drop"};
   const way=W[on?on.dataset.way:"pickup"]||"pickup";
@@ -4481,11 +4670,18 @@ const MERCHANT_NAMES={A:'粤宝翡翠回收（深圳）',B:'中翠源珠宝（�
 const RECHECK_DEF={no:'JJH-260719-2JF6WX',goods:'翡翠紫罗兰珠串',code:'B',price:'1,120',n:4,top:true};
 /* ⑦ 的鉴定结论摘要，按订单号取。⚠️ 演示值，上线时由报告字段回填。
    摘要必须跟着头部一起换：只换头部会让同一屏出现「冰种手镯 ＋ 珠串的结论」。 */
+/* sy＝一物一码，ai＝AI 初估区间，tl＝时间线［提交估价, 选择变现方式, 揽收, 质检中心签收, 报告出具］。
+   这三项是 ⑦ 确认成交后生成 ⑧ 详情用的（问题 03）：成交落地页必须是**这一单**，
+   而不是订单列表里那张写死的「已收款 ¥4,600」。 */
 const RECHECK_REPORTS={
   'JJH-260719-2JF6WX':{kv:[['种水','糯种'],['颜色','紫罗兰'],['结论','天然翡翠（A货）'],['总重','58.30 g']],
-    flaw:'第 7 颗珠有一处 <b>3mm 石纹</b>（开箱录像 02:14 处标注）',at:'02:14 石纹特写'},
+    flaw:'第 7 颗珠有一处 <b>3mm 石纹</b>（开箱录像 02:14 处标注）',at:'02:14 石纹特写',
+    sy:'SY-260719-M4XC7BQ2',ai:'¥900–¥1,400',rep:'GY-20260721-0447',
+    tl:['07-18 11:20','07-18 12:05','07-19 09:40','07-20 10:15','07-21 14:26']},
   'JJH-260721-4TG9PN':{kv:[['种水','冰种'],['颜色','飘绿'],['结论','天然翡翠（A货）'],['总重','62.40 g']],
-    flaw:'内圈一处 <b>4mm 石纹</b>（开箱录像 01:38 处标注）',at:'01:38 石纹特写'}
+    flaw:'内圈一处 <b>4mm 石纹</b>（开箱录像 01:38 处标注）',at:'01:38 石纹特写',
+    sy:'SY-260721-W6HD3PL9',ai:'¥3,200–¥6,000',rep:'GY-20260721-0882',
+    tl:['07-20 15:58','07-20 16:03','07-20 17:40','07-21 09:30','07-21 16:20']}
 };
 let recheck=Object.assign({},RECHECK_DEF);
 /* 寄售参考区间按订单取。⚠️ 原来这个区间在三处各写一份：④ 的 ref-card 写 ¥4,800–6,000，
@@ -4530,12 +4726,172 @@ function renderRecheck(){
   set('rc-kv',  function(e){e.innerHTML=rp.kv.map(function(x){return '<div class="kv"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>';}).join('');});
   set('rc-flaw',function(e){e.innerHTML='瑕疵披露：'+rp.flaw;});
   set('rc-consign-ref',function(e){e.textContent='参考 '+refShort(r.no)+' · 货在平台，不产生运费';});
+  set('rc-rep',function(e){e.textContent=rp.rep||'GY-20260721-0882';});
   set('rc-video',function(e){e.setAttribute('onclick',"toast('开箱核验录像回放（演示）· "+rp.at+" · 对您免费')");});
   set('rc-ok',    function(e){
     e.textContent='确认成交 ¥'+r.price;
-    // 字符串里不出现引号嵌套：用单引号包 onclick、内部不再引 HTML
-    e.setAttribute('onclick',"toast('已确认成交 ¥"+r.price+"，"+full+"将在24 小时内打款（演示）');setTimeout(()=>goDone('s-detail'),900);");
+    // 成交后的 toast、⑧ 详情的生成全在 confirmDeal 里，这里不再拼带引号的字符串
+    e.setAttribute('onclick','confirmDeal()');
   });
+}
+/* ===== ⑧ 订单详情：一屏三态 =====
+   state: doing 进行中 ｜ done 已成交 ｜ ended 未成交结束（拒绝报价／取消）
+   步骤写成显式数组而不是按进度推导：六张单的时间线各不相同，推导出来的文案一定是套话，
+   而这一屏的价值恰恰在「现在到哪一步、下一步谁动」。[类, 标题, 说明, 链接文案, 链接编号]
+   链接用无引号属性 onclick=odLink(N)，不往字符串里塞带引号的 HTML。 */
+const ODLINKS=[
+  function(){toast('物流详情（演示）：SF1324558891 已由质检中心签收');},
+  function(){toast('开箱核验录像回放（演示）· 对您免费开放');},
+  function(){goDetailReport();},
+  function(){toast('物流详情（演示）：SF1324559002 运送中，预计明日达质检中心');},
+  function(){toast('物流详情（演示）：货品已寄回并签收');}
+];
+function odLink(i){if(ODLINKS[i])ODLINKS[i]();}
+const ORDERS={
+  'JJH-260720-7BKW5V':{route:'cash',state:'doing',has:[],goods:'翡翠阳绿蛋面戒指',code:'SY-260720-R3TK8QW1',
+    big:'运送中',sub:'07-20 顺丰揽收 · 预计明日达质检中心',
+    tags:[['','平台全额保价']],payer:'',lab:'',
+    steps:[['done','提交估价 · AI 初估 ¥1,600–¥2,400','07-19 14:20 · 算法初估，不构成报价'],
+           ['done','选择现款回收 · 预约交货','07-19 15:02 · 机构在报告出具后才报价'],
+           ['doing','顺丰揽收 · 运送中','07-20 10:12 · ','SF1324559002 ›',3],
+           ['','质检中心签收 · 开箱录像 · 一物一码入库','预计明日达'],
+           ['','第三方鉴定公司出具鉴定报告','报告出具后开启机构竞价'],
+           ['','机构据报告出价 · 您确认成交',''],
+           ['','机构打款 → 平台核验到账 → 放货','']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
+        +'<button class="btn btn-main" onclick="odLink(3)">物流详情</button>'},
+  'JJH-260720-M8Q3ZH':{route:'cash',state:'doing',has:['in'],goods:'翡翠飘阳绿叶子吊坠',code:'SY-260720-H7NV4MZ6',
+    big:'鉴定中',sub:'07-20 质检中心签收 · 报告出具后开启机构竞价',
+    tags:[['','开箱核验已完成']],payer:'',lab:'鉴定方：国玉检测技术（广东）有限公司',
+    steps:[['done','提交估价 · AI 初估 ¥2,800–¥3,600','07-19 09:40 · 算法初估，不构成报价'],
+           ['done','选择现款回收 · 预约交货','07-19 11:15 · 机构在报告出具后才报价'],
+           ['done','顺丰揽收','07-19 17:30'],
+           ['done','质检中心签收 · 开箱录像 · 一物一码入库','07-20 09:12 · ','▶ 免费回看开箱录像',1],
+           ['doing','第三方鉴定公司出具鉴定报告中','国玉检测 · 出具后开启机构竞价'],
+           ['','机构据报告出价 · 您确认成交',''],
+           ['','机构打款 → 平台核验到账 → 放货','']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
+        +'<button class="btn btn-main" onclick="odLink(1)">开箱录像</button>'},
+  'JJC-260721-B6HP2W':{route:'consign',state:'doing',has:['in'],goods:'翡翠糯冰福瓜吊坠',code:'SY-260721-D2WQ9XF5',
+    big:'鉴定中',sub:'07-21 质检中心签收 · 报告出具后由您确定挂价并上架',
+    tags:[['','开箱核验已完成']],payer:'',lab:'鉴定方：国玉检测技术（广东）有限公司',
+    steps:[['done','提交估价 · AI 初估 ¥1,500–¥2,000','07-20 16:05 · 算法初估，不构成报价'],
+           ['done','选择委托寄售 · 预约交货','07-20 16:40 · 挂价由您确定'],
+           ['done','顺丰揽收','07-20 18:20'],
+           ['done','质检中心签收 · 开箱录像 · 一物一码入库','07-21 09:50 · ','▶ 免费回看开箱录像',1],
+           ['doing','第三方鉴定公司出具鉴定报告中','国玉检测 · 报告将随商品页向买家公示'],
+           ['','由您确定挂价 · 上架商城','平台给参考区间，页面实时显示预计到手'],
+           ['','买家下单 · 确认收货后款项直达您的账户','']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
+        +'<button class="btn btn-main" onclick="go(\'s-consign\')">寄售管理</button>'},
+  'JJH-260717-8VD3KP':{route:'cash',state:'ended',has:['in','report'],rep:'GY-20260717-0663',goods:'翡翠糯种福豆吊坠',code:'SY-260717-B8JM3CR7',
+    big:'已寄回 · 未成交',sub:'本轮最高报价 ¥860，您已拒绝 · 07-19 货品已签收',
+    tags:[['','鉴定报告已出具'],['gold','天然A货']],payer:'',lab:'鉴定方：国玉检测技术（广东）有限公司',
+    steps:[['done','提交估价 · AI 初估 ¥800–¥1,300','07-15 10:20 · 算法初估，不构成报价'],
+           ['done','选择现款回收 · 预约交货','07-15 11:00'],
+           ['done','顺丰揽收','07-16 09:30'],
+           ['done','质检中心签收 · 开箱录像 · 一物一码入库','07-16 15:40 · ','▶ 免费回看开箱录像',1],
+           ['done','第三方鉴定公司出具鉴定报告','07-17 10:15 · 国玉检测 · ','查看鉴定报告 ›',2],
+           ['done','您拒绝全部报价','07-17 16:22 · 本轮最高 ¥860 · 无理由拒绝，无需说明理由'],
+           ['done','支付寄回费用 ¥33','07-17 16:25 · 回程运费 ¥13 ＋ 鉴定费 ¥20（保价费由平台承担）'],
+           ['done','货品寄回并签收','07-19 14:08 · ','物流详情 ›',4]],
+    acts:'<button class="btn btn-ghost" onclick="odLink(4)">物流详情</button>'
+        +'<button class="btn btn-main" onclick="goForm(\'cash\',\'pickup\')">重新估价</button>'},
+  'JJH-260715-6HW2NF':{route:'cash',state:'ended',has:['in'],goods:'翡翠豆种圆条手镯',code:'SY-260715-K9PT2XN4',
+    big:'已取消 · 货品已寄回',sub:'报告出具前取消 · 回程运费 ¥13 由您承担，未收鉴定费',
+    tags:[['','鉴定报告未出具']],payer:'',lab:'',
+    steps:[['done','提交估价 · AI 初估 ¥600–¥900','07-13 19:10 · 算法初估，不构成报价'],
+           ['done','选择现款回收 · 预约交货','07-13 19:35'],
+           ['done','顺丰揽收','07-14 10:40'],
+           ['done','质检中心签收 · 开箱录像 · 一物一码入库','07-15 09:05 · ','▶ 免费回看开箱录像',1],
+           ['done','您在报告出具前取消本单','07-15 11:20 · 报告未出具，不收鉴定费'],
+           ['done','支付寄回运费 ¥13','07-15 11:22 · 保价费由平台承担'],
+           ['done','货品寄回并签收','07-16 16:30 · ','物流详情 ›',4]],
+    acts:'<button class="btn btn-ghost" onclick="odLink(4)">物流详情</button>'
+        +'<button class="btn btn-main" onclick="goForm(\'cash\',\'pickup\')">重新估价</button>'},
+  'JJH-260603-K7QW42':{route:'cash',state:'done',has:['in','report','deal'],rep:'GY-20260605-0921',
+    goods:'翡翠白底青挂件',code:'SY-260605-K4W7QZ3M',
+    big:'<svg class="ico"><use href="#i-check"/></svg> 已收款 <span style="font-size:24px;">¥1,120</span>',
+    sub:'驻店门店当面成交 · 由“瑞玉堂珠宝（佛山）”直接汇入 招商银行储蓄卡（尾号8837） · 06-05 11:18',
+    tags:[['','驻店当面出具报告'],['gold','天然A货']],
+    payer:'打款方：瑞玉堂珠宝（佛山）',lab:'鉴定方：国玉检测技术（广东）· 驻店鉴定师当面出具',
+    steps:[['done','到店交件 · 驻店鉴定师当面出具鉴定报告','06-05 10:32 · ','查看鉴定报告 ›',2],
+           ['done','报告推送经审核的回收机构 · 店内远程限时竞价','06-05 10:41 · 3 家出价'],
+           ['done','您在店确认成交 ¥1,110 ＋ 加价券 ¥10','06-05 10:55'],
+           ['done','机构打款 ¥1,120 → 平台核验到账 → 当面移交货品','06-05 11:18 · 招商银行（8837）']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-certs\')">查看证书</button>'
+        +'<button class="btn btn-main" onclick="goForm(\'cash\',\'\')">再卖一件</button>'},
+  'JJH-260713-3XM8VD':{route:'cash',state:'done',has:['in','report','deal'],rep:'GY-20260715-0337',goods:'翡翠飘绿佛公吊坠',code:'SY-260715-T8ZV5HN2',
+    big:'<svg class="ico"><use href="#i-check"/></svg> 已收款 <span style="font-size:24px;">¥4,600</span>',
+    sub:'由“粤宝翡翠回收（深圳）”直接汇入 招商银行储蓄卡（尾号8837） · 07-15 14:02',
+    tags:[['','鉴定报告已出具'],['gold','天然A货']],
+    payer:'打款方：粤宝翡翠回收（深圳）有限公司',lab:'鉴定方：国玉检测技术（广东）有限公司',
+    steps:[['done','提交估价 · AI 初估 ¥3,900–¥5,100','07-13 15:58 · 算法初估，不构成报价'],
+           ['done','选择现款回收 · 预约交货','07-13 17:36 · 变现方式已选定，机构在报告出具后才报价'],
+           ['done','顺丰上门取件（全额保价）','07-14 10:05 · ','SF1324558891 ›',0],
+           ['done','质检中心签收 · 开箱录像 · 一物一码入库','07-15 09:30 · 称重 38.62g · ','▶ 免费回看开箱录像',1],
+           ['done','第三方鉴定公司出具鉴定报告','07-15 10:40 · 国玉检测 · ','查看鉴定报告 ›',2],
+           ['done','竞价结束 · 4 家机构据报告出价，您选定粤宝翡翠 ¥4,600 并确认成交','07-15 11:20'],
+           ['done','机构打款 ¥4,600 → 平台核验到账 → 放货','07-15 14:02 · 招商银行（8837）']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
+        +'<button class="btn btn-main" onclick="goForm(\'cash\',\'\')">再卖一件</button>'}
+};
+const ORDER_DEF='JJH-260713-3XM8VD';
+let detailNo=ORDER_DEF;
+function renderDetail(){
+  const o=ORDERS[detailNo]||ORDERS[ORDER_DEF];
+  const set=function(id,fn){const e=document.getElementById(id);if(e)fn(e);};
+  set('od-head',function(e){e.innerHTML='<div class="big">'+o.big+'</div><div class="sub">'+o.sub+'</div>';});
+  set('od-goods',function(e){e.textContent=o.goods;});
+  set('od-no',function(e){e.textContent=(o.route==='consign'?'寄售单号 ':'回收单号 ')+detailNo+' · 一物一码 '+o.code;});
+  set('od-tags',function(e){e.innerHTML=o.tags.map(function(t){return '<span class="tag'+(t[0]?' '+t[0]:'')+'">'+t[1]+'</span>';}).join('');});
+  set('od-payer',function(e){e.style.display=o.payer?'':'none';});
+  set('od-payer-t',function(e){if(o.payer)e.textContent=o.payer;});
+  set('od-lab',function(e){e.style.display=o.lab?'':'none';});
+  set('od-steps',function(e){
+    e.innerHTML=o.steps.map(function(s,i){
+      const cls=s[0],dot=cls==='done'?'✓':(cls==='doing'?'●':String(i+1));
+      const link=s[3]?'<span class="od-lk" onclick=odLink('+s[4]+')>'+s[3]+'</span>':'';
+      return '<div class="stepv '+(cls||'todo')+'"><div class="dot">'+dot+'</div>'
+        +'<div><b>'+s[1]+'</b><span>'+s[2]+link+'</span></div></div>';
+    }).join('');
+  });
+  /* 交易保障四格：in＝已入质检中心（开箱录像／一物一码），report＝报告已出具，deal＝已成交（电子凭证）。
+     缺省按全给，整卡在一项都没有时隐藏（如「运送中」那一单，货还没到质检中心） */
+  const has=o.has||['in','report','deal'];
+  set('od-trace',function(e){
+    [...e.querySelectorAll('.tc')].forEach(function(t){t.style.display=has.indexOf(t.dataset.need)>=0?'':'none';});
+  });
+  set('od-trace-card',function(e){e.style.display=has.length?'':'none';});
+  set('od-acts',function(e){e.innerHTML=o.acts;});
+}
+// 订单卡进 ⑧：必须带单号，否则六类状态共用一份写死的「已收款」
+function goDetail(no){detailNo=ORDERS[no]?no:ORDER_DEF;renderDetail();go('s-detail');}
+/* ⑦ 确认成交 → ⑧：就地为**这一单**生成一条详情，而不是落到订单列表里那张
+   「已收款 ¥4,600 · 粤宝翡翠 · 佛公吊坠」——原来点「确认成交 ¥1,120」会落到 ¥4,600 那一屏，
+   货品、金额、打款方、单号四项全不一致。
+   ⚠️ 头部写「已确认成交 · 待打款」不是「已收款」：此刻钱还没到，toast 自己也说「24 小时内打款」。
+   末步因此是 doing 不是 done。 */
+function confirmDeal(){
+  const r=recheck,full=MERCHANT_NAMES[r.code]||MERCHANT_NAMES.A;
+  const rp=RECHECK_REPORTS[r.no]||RECHECK_REPORTS[RECHECK_DEF.no];
+  toast('已确认成交 ¥'+r.price+'，'+full+'将在 24 小时内打款（演示）');
+  ORDERS[r.no]={route:'cash',state:'done',has:['in','report','deal'],rep:rp.rep,goods:r.goods,code:rp.sy,
+    big:'<svg class="ico"><use href="#i-check"/></svg> 已确认成交 <span style="font-size:24px;">¥'+r.price+'</span>',
+    sub:'由“'+full+'”直接汇入 招商银行储蓄卡（尾号8837） · 24 小时内到账',
+    tags:[['','鉴定报告已出具'],['gold','天然A货']],
+    payer:'打款方：'+full,lab:'鉴定方：国玉检测技术（广东）有限公司',
+    steps:[['done','提交估价 · AI 初估 '+rp.ai,rp.tl[0]+' · 算法初估，不构成报价'],
+           ['done','选择现款回收 · 预约交货',rp.tl[1]+' · 机构在报告出具后才报价'],
+           ['done','顺丰上门取件（全额保价）',rp.tl[2]],
+           ['done','质检中心签收 · 开箱录像 · 一物一码入库',rp.tl[3]+' · ','▶ 免费回看开箱录像',1],
+           ['done','第三方鉴定公司出具鉴定报告',rp.tl[4]+' · 国玉检测 · ','查看鉴定报告 ›',2],
+           ['done','竞价结束 · '+r.n+' 家机构据报告出价，您选定'+full+' ¥'+r.price+' 并确认成交','刚刚'],
+           ['doing','机构打款 → 平台核验到账 → 放货','24 小时内到账 · 到账后平台才向机构放货']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
+        +'<button class="btn btn-main" onclick="goForm(\'cash\',\'\')">再卖一件</button>'};
+  detailNo=r.no;renderDetail();
+  setTimeout(function(){goDone('s-detail');},900);
 }
 // 订单列表与消息进 ⑦：回到默认那一单，不带比价页的上下文
 function goRecheck(){recheck=Object.assign({},RECHECK_DEF);renderRecheck();go('s-recheck');}
@@ -4555,9 +4911,29 @@ function pickMerchant(name,price){
   toast('已选定 '+name+' · ¥'+price+'，请确认成交');
   setTimeout(function(){go('s-recheck');},700);
 }
+/* ⑭ 驻店当面成交 → ⑧。原来只弹一个 toast 就结束了：
+   线上那条路有 ⑦→⑧ 两屏承接，门店这条路成交即消失，用户手上没有任何可留存的东西，
+   「打款到账后移交货品」这段等待也没有页面承载。
+   ⚠️ 原 toast 还把代号「回收机构 A」念了出来，与本屏「成交前不披露」自相矛盾；
+      按 PRD 4.12，确认成交这一刻正是该披露全称的时点。 */
 function onsitePick(name,price){
-  // 门店场景货还在用户手上，成交完成前不披露机构名称
-  toast('已确认 ¥'+price+' 成交（'+name+'）· 待其打款、平台核验到账后当面移交并披露机构全名');
+  const full=MERCHANT_NAMES[name.replace('回收机构','').trim()]||MERCHANT_NAMES.A;
+  const no='JJH-260722-S5RT9K';
+  ORDERS[no]={route:'cash',state:'done',has:['in','report','deal'],rep:'GY-20260722-1054',
+    goods:'翡翠手镯 56.5 圈口',code:'SY-260722-J4QW7ZR3',
+    big:'<svg class="ico"><use href="#i-check"/></svg> 已确认成交 <span style="font-size:24px;">¥'+price+'</span>',
+    sub:'由“'+full+'”直接汇入 招商银行储蓄卡（尾号8837）· 到账后当面移交货品',
+    tags:[['','驻店当面出具报告'],['gold','天然A货']],
+    payer:'打款方：'+full,lab:'鉴定方：国玉检测技术（广东）· 驻店鉴定师当面出具',
+    steps:[['done','到店交件 · 驻店鉴定师当面出具鉴定报告','07-22 15:31 · ','查看鉴定报告 ›',2],
+           ['done','报告推送经审核的回收机构 · 店内远程限时竞价','07-22 15:34 · 3 家出价，机构人员不到场'],
+           ['done','您在店确认成交 ¥'+price+'（'+full+'）','刚刚'],
+           ['doing','机构打款 → 平台核验到账 → 当面移交货品','款项到账后店员当面交还结算凭证']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
+        +'<button class="btn btn-main" onclick="goForm(\'cash\',\'\')">再卖一件</button>'};
+  detailNo=no;renderDetail();
+  toast('已确认 ¥'+price+' 成交 · '+full+'，到账后当面移交');
+  setTimeout(function(){goDone('s-detail');},900);
 }
 let bidState='live';   // pickMerchant 要按当前这一轮算「本轮几家出价 / 是不是最高价」
 function setBidState(st){
@@ -4703,6 +5079,7 @@ function fbFill(el){
   document.getElementById('fb-num').textContent=Math.min(n,500);
 }
 function submitFeedback(){
+  if(needLogin())return;
   const desc=document.getElementById('fb-desc').textContent.trim();
   if(document.querySelector('#fb-desc .ph')||desc.length<5){
     toast('请先填写问题描述（不少于 5 个字）');
@@ -4745,6 +5122,10 @@ const TIERS=[
   icons:[['<svg class=ico><use href=#i-tag /></svg>','寄售8折','服务费优惠'],['<svg class=ico><use href=#i-truck /></svg>','上门×12','免费上门'],['<svg class=ico><use href=#i-return /></svg>','寄回券×6','不成交免运费'],['<svg class=ico><use href=#i-star /></svg>','优先上架','商城曝光位'],['<svg class=ico><use href=#i-ticket /></svg>','优惠券×12','会员专属']],
   notice:'<h4>帝王绿会员须知</h4><p>1. 翠友·帝王绿会员定价 <span class="idx">199元</span>，支付即成为帝王绿会员；<br>2. 会员有效期 <span class="idx">365天</span>，权益有效期 365 天；<br>3. 帝王绿会员权益包括：<br>&nbsp;&nbsp;① 长期享寄售服务费 8 折；<br>&nbsp;&nbsp;② 回收加价券 50 元×6 + 20 元×6；<br>&nbsp;&nbsp;③ 免费上门取件 12 次；<br>&nbsp;&nbsp;④ 不成交寄回运费券 6 张；<br>&nbsp;&nbsp;⑤ 寄售商城优先上架曝光位；<br>&nbsp;&nbsp;⑥ 生日礼遇 + 专属顾问全程服务。</p><div class="warn"><svg class=ico><use href=#i-bell /></svg> 会员服务属于特殊商品，暂不提供退款服务。<br><b>会员升级说明：</b>青玉/冰润升级帝王绿仅需补差价，原权益有效期不变。</div>'}
 ];
+function vipPay(){
+  if(needLogin())return;
+  toast('演示：调起微信支付开通翠友会员');
+}
 function vipTier(i){
   const t=TIERS[i];
   document.querySelectorAll('#s-vip .vip-tab').forEach((tab,idx)=>tab.classList.toggle('on',idx===i));
@@ -4902,6 +5283,32 @@ function openStandard(){
   m.classList.add("on");
 }
 function closeStandard(){const m=document.getElementById("std-mask");if(m)m.classList.remove("on");}
+
+/* ④ 费用说明弹层。与 openStandard 同一套 .exp-sheet，金额一律由参数推导：
+   运费取价目表最低价，鉴定费取 ID_FEE，不手写 */
+function openFee(){
+  let m=document.getElementById("fee-mask");
+  if(!m){
+    const lo=Math.min.apply(null,EXPRESS.map(function(x){return parseFloat(x.p);}));
+    m=document.createElement("div");m.className="exp-mask";m.id="fee-mask";
+    m.setAttribute("onclick","closeFee()");
+    m.innerHTML='<div class="exp-sheet" onclick="event.stopPropagation()">'
+      +'<div class="es-hd">费用说明<i onclick="closeFee()">×</i></div>'
+      +'<div class="std-h">运费</div>'
+      +'<div class="std-ok"><b>去程与回程一律由您承担</b>（快递可选，¥'+lo+' 起）。<br>'
+      +'交至代收点的<b>去程不收费用</b>，不成交可退回原店自取、同样不收运费。</div>'
+      +'<div class="std-h">鉴定费</div>'
+      +'<div class="std-row"><span class="sk">成交</span><span class="sv"><b>不收</b>，也不收服务费</span></div>'
+      +'<div class="std-row"><span class="sk">未成交</span><span class="sv">按件收取 <b>¥'+ID_FEE+'</b>／件</span></div>'
+      +'<div class="std-row"><span class="sk">三种不收</span><span class="sv">报告出具前取消 · 本轮无机构出价 · 买家退货回流</span></div>'
+      +'<div class="std-h">保价费</div>'
+      +'<div class="std-ok"><b>始终由平台承担</b>，寄出前无需您自行保价；运输与在库期间的破损、丢失由平台全额赔付。</div>'
+      +'<div class="es-ft">多件可合并为一个包裹寄回，<b>运费只收一次</b>；鉴定费与纸质证书按件计收。完整条款见《翡翠现款回收交易协议》四。</div></div>';
+  }
+  document.querySelector(".screen.active").appendChild(m);
+  m.classList.add("on");
+}
+function closeFee(){const m=document.getElementById("fee-mask");if(m)m.classList.remove("on");}
 
 /* ===== 运费在线支付 =====
    2026-08-12 决定：去程运费也改为小程序内在线支付（原为「在快递员处支付」）。
@@ -5285,10 +5692,35 @@ function addrAction(i){
   }
   go('s-address-add');
 }
+// 省市区在真实产品里是三级选择器，原型点一下回填一个值
+function pickRegion(){
+  const e=document.getElementById('ad-region');
+  if(e)e.textContent='广东省 深圳市 南山区';
+  toast('演示：已定位到 广东省 深圳市 南山区');
+}
+/* ㉚ 提交：三项非空校验，保存的是**填入的值**。
+   原来无论填什么都写死追加一条「南山区科技园 XX 大厦 X 座」，点确认必然成功 */
 function addAddress(){
-  APP.addrs.push({name:'陈先生',phone:'136****3827',addr:'广东省 深圳市 南山区 科技园 XX大厦X座',def:false});
+  const name=(document.getElementById('ad-name')||{}).textContent||'';
+  const region=(document.getElementById('ad-region')||{}).textContent||'';
+  const detail=(document.getElementById('ad-detail')||{}).textContent||'';
+  const miss=!name.trim()?['ad-name','请填写姓名']
+            :(region.indexOf('请点击')>=0?['ad-region','请选择省市区']
+            :(!detail.trim()?['ad-detail','请填写详细地址']:null));
+  if(miss){
+    toast(miss[1]);
+    const el=document.getElementById(miss[0]);
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+    el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
+    return;
+  }
+  if(needLogin())return;
+  APP.addrs.push({name:name.trim(),phone:'136****3827',addr:region.trim()+' '+detail.trim(),def:false});
   APP.addrIdx=APP.addrs.length-1;
   renderPickTargets();updatePickBanner();
+  // 清空表单，避免下次进来还留着上一条
+  ['ad-name','ad-detail'].forEach(function(id){const e=document.getElementById(id);if(e)e.textContent='';});
+  const r=document.getElementById('ad-region');if(r)r.innerHTML='<span class="ph">请点击定位选择地区</span>';
   toast('地址已保存并设为当前地址（演示）');
   setTimeout(back,800);
 }
@@ -5305,6 +5737,8 @@ updateShipSubmit();
 setBidState('live');   // ④ 默认落在“竞价进行中”
 renderRecheck();       // ⑦ 有初始状态，初始化必须显式渲染一次
 renderConsignRef();    // ④ 的寄售参考区间同源于 CONSIGN_REF，同样要显式渲染一次
+renderDetail();        // ⑧ 三态由数据渲染，初始化落在「已打款」那一单
+renderReport();        // ⑨ 按报告号渲染，初始化落在商城那件方牌的报告
 pickRoute('cash');     // ④ 默认落在现款回收，但寄售与它平权并列、随时可切
 renderBidList(ONSITE_SET,'onsite-list','onsite');
 renderBookForm();
