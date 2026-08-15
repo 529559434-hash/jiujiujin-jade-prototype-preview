@@ -1679,10 +1679,10 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
 
     <div class="card">
       <div class="card-hd" style="margin-bottom:10px;"><div class="sec-title" style="margin-bottom:0;">大家都在问</div><span class="hd-more" onclick="go('s-faq')">更多 ›</span></div>
-      <div class="faq-item" onclick="goFaq(9)"><div class="qn">01</div>钱是谁打给我的？是久久金吗？<span class="arrow">›</span></div>
-      <div class="faq-item" onclick="goFaq(0)"><div class="qn">02</div>没有证书的翡翠可以回收吗？<span class="arrow">›</span></div>
-      <div class="faq-item" onclick="goFaq(4)"><div class="qn">03</div>报价会不会到货后又变低？<span class="arrow">›</span></div>
-      <div class="faq-item" onclick="goFaq(5)"><div class="qn">04</div>委托寄售一般多久能卖出去？<span class="arrow">›</span></div>
+      <div class="faq-item" onclick="goFaqK('whopays')"><div class="qn">01</div>钱是谁打给我的？是久久金吗？<span class="arrow">›</span></div>
+      <div class="faq-item" onclick="goFaqK('nocert')"><div class="qn">02</div>没有证书的翡翠可以回收吗？<span class="arrow">›</span></div>
+      <div class="faq-item" onclick="goFaqK('nochange')"><div class="qn">03</div>报价会不会到货后又变低？<span class="arrow">›</span></div>
+      <div class="faq-item" onclick="goFaqK('consign')"><div class="qn">04</div>委托寄售一般多久能卖出去？<span class="arrow">›</span></div>
     </div>
 
     <div class="card">
@@ -1892,9 +1892,9 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     <!-- 异常态一：仅一家出价。明示实情，绝不伪装成“比价结果” -->
     <div class="exc-box" id="exc-one" style="display:none;">
       <div class="exc-t">本轮仅 1 家出价，<b>这不构成比价</b></div>
-      已延长 <b>0 / 2</b> 次。可接受这一家，也可再等一轮。
+      已延长 <b class="bid-extend-n">0 / 2</b> 次。可接受这一家，也可再等一轮。
       <div class="exc-acts">
-        <button class="btn btn-ghost" onclick="toast('已延长一轮竞价，新窗口 15 分钟（演示）');setBidState('live');">延长一轮竞价</button>
+        <button class="btn btn-ghost bid-extend-btn" onclick="extendBid()">延长一轮竞价</button>
         <button class="btn btn-main" onclick="pickMerchant('回收机构 C','4,120')">接受这一家</button>
       </div>
     </div>
@@ -1905,7 +1905,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <div class="exc-t">最高与最低相差 <b>¥2,300（58%）</b></div>
       各家库存与销路不同，价差与您货品的品质无关。<b>平台不解释价差、不为任何一家背书</b>。
       <div class="exc-acts">
-        <button class="btn btn-ghost" onclick="toast('已延长一轮竞价（演示）');setBidState('live');">延长一轮竞价</button>
+        <button class="btn btn-ghost bid-extend-btn" onclick="extendBid()">延长一轮竞价</button>
         <button class="btn btn-main" onclick="pickMerchant('回收机构 A','6,300')">接受最高价 ¥6,300</button>
       </div>
     </div>
@@ -1927,7 +1927,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
          页面只留一行事实陈述 + 一个入口，不在决策屏上讲道理 -->
     <div class="quote-meta">
       <span>报价有效期 <b>72 小时</b>（至 07-24）</span>
-      <span class="qm-link" onclick="goFaq(9)">机构全名何时公布 ›</span>
+      <span class="qm-link" onclick="goFaqK('whopays')">机构全名何时公布 ›</span>
       <!-- 原来用 toast 承载 57 字、1.9 秒消失。这是决定「要不要拒绝报价」的核心信息，
            读不完；同屏的「上架标准」用的是可滚动弹层，两种承载方式也不一致。改用同一套弹层 -->
       <span class="qm-link" onclick="openFee()">费用说明 ›</span>
@@ -1979,7 +1979,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
 </div>
 
 <!-- ============ S5 预约寄送 ============ -->
-<div class="screen" id="s-ship" data-title="⑥ 预约交货 — 四选一（含交至代收点）">
+<div class="screen" id="s-ship" data-title="⑥ 预约交货 — 交付方式三选一（含交至代收点）">
   <div class="statusbar"><span>17:38</span><span class="right">●●● 📶 🔋</span></div>
   <div class="capsule-row"><i>•••</i><i>◉</i></div>
   <div class="navbar"><span class="back" onclick="back()">‹</span>预约寄送</div>
@@ -2101,190 +2101,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
   </div>
   <div class="scroll" style="padding-top:12px;">
     <div class="guest-state"><div class="es-ico"><svg class="ico"><use href="#i-lock"/></svg></div><b>登录后查看您的订单</b><div class="es-act" onclick="goLogin()">登录</div></div>
-    <div class="order-card" data-seg="pending" data-type="recycle" onclick="go('s-book-ok')">
-      <div class="oc-top"><span class="oc-ch">驻店门店</span><b style="font-size:13.5px;">当面成交</b><span class="st gold">待到店</span></div>
-      <div class="oc-tip">温馨提示：请记得携带相关物品及证件到门店。驻店鉴定师将当面为您出具鉴定报告</div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
-        <div class="oc-info"><b>集团运营店NO.001</b><div class="meta">品类：翡翠手镯｜1 件</div><div class="meta">当面出具鉴定报告（免费）· 到店时间 07-22 15:19</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消预约</button><button class="sm" onclick="event.stopPropagation();toast('演示：地图导航到店')">地图导航</button><button class="sm hi" onclick="event.stopPropagation();go('s-realname')">实名认证</button></div>
-    </div>
-    <!-- 估价中：② 提交即建单，到出参考区间之间约 3 分钟，这段原来在订单页没有任何卡片 -->
-    <div class="order-card" data-seg="doing" data-type="recycle" onclick="goAiPending()">
-      <div class="oc-top"><span>回收单 · JJH-260722-N8XC4D</span><span class="st gold">估价中</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-bead" style="width:42px;height:42px;"></div></div>
-        <div class="oc-info"><b>翡翠糯种平安扣</b><div class="meta">07-22 15:58 提交 · AI 识别中，约 3 分钟出参考区间</div><div class="meta">出结果后微信通知您，再选变现方式</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消订单</button><button class="sm hi" onclick="event.stopPropagation();goAiPending()">查看进度</button></div>
-    </div>
-    <div class="order-card" data-seg="doing" data-type="recycle" onclick="go('s-quote')">
-      <div class="oc-top"><span>回收单 · JJH-260721-4TG9PN</span><span class="st gold">竞价中</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
-        <div class="oc-info"><b>翡翠冰种手镯 56.5 圈口</b><div class="meta">07-21 17:24 提交 · 已推送 5 家机构</div><div class="pr">当前最高 <span class="price">¥4,600</span><div class="meta">窗口剩余 12 分 47 秒</div></div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('quoted')">终止竞价</button><button class="sm hi" onclick="event.stopPropagation();go('s-quote')">看实时报价</button></div>
-    </div>
-    <!-- 「已交货」这一段内部还有三个子状态（运送中 / 质检核验中 / 鉴定中），
-         不再各设段位——段位是筛选器，不是状态机全集。改在卡片标签上区分 -->
-    <div class="order-card" data-seg="doing" data-type="recycle" onclick="goDetail('JJH-260720-7BKW5V')">
-      <div class="oc-top"><span>回收单 · JJH-260720-7BKW5V</span><span class="st gray">运送中</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
-        <div class="oc-info"><b>翡翠阳绿蛋面戒指</b><div class="meta">07-20 顺丰揽收 SF1324559002 · 预计明日达质检中心</div><div class="meta">到货出具鉴定报告后，多家机构据此报价</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('paid')">取消回收</button><button class="sm hi" onclick="event.stopPropagation();toast('物流详情（演示）')">物流详情</button></div>
-    </div>
-    <div class="order-card" data-seg="doing" data-type="recycle" onclick="goDetail('JJH-260720-M8Q3ZH')">
-      <div class="oc-top"><span>回收单 · JJH-260720-M8Q3ZH</span><span class="st gray">鉴定中</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
-        <div class="oc-info"><b>翡翠飘阳绿叶子吊坠</b><div class="meta">07-20 质检中心签收 · 开箱核验已完成</div><div class="meta">第三方鉴定公司出具报告中，报告出具后开启机构竞价</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('paid')">取消回收</button><button class="sm hi" onclick="event.stopPropagation();goDetail('JJH-260720-M8Q3ZH')">查看进度</button></div>
-    </div>
-    <div class="order-card" data-seg="pending" data-type="recycle" onclick="goRecheck()">
-      <div class="oc-top"><span>回收单 · JJH-260719-2JF6WX</span><span class="st red">待您确认成交</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-bead" style="width:42px;height:42px;"></div></div>
-        <div class="oc-info"><b>翡翠紫罗兰珠串</b><div class="meta">07-20 质检中心签收 · 07-21 鉴定报告已出具</div><div class="pr">机构报价 <span class="price">¥1,120</span><div class="meta">本轮最高 · 报价方：中翠源珠宝 · 依据报告 GY-20260721-0447</div></div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('开箱核验录像回放（演示）')">开箱录像</button><button class="sm hi" onclick="event.stopPropagation();goRecheck()">去确认</button></div>
-    </div>
-    <!-- 待寄出＝货还在用户手上，此时不存在任何报价，入口只能是「去交货」 -->
-    <div class="order-card" data-seg="pending" data-type="recycle" onclick="goShip('cash')">
-      <div class="oc-top"><span>回收单 · JJH-260718-R5N9TC</span><span class="st gray">待寄出</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
-        <div class="oc-info"><b>翡翠晴水平安扣</b><div class="meta">07-18 已选择现款回收 · 交货后出报告，再由多家机构报价</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消订单</button><button class="sm hi" onclick="event.stopPropagation();goShip('cash')">去预约交货</button></div>
-    </div>
-    <!-- 寄售单同样从「待寄出」起步：③ 选定委托寄售即建单，交货 → 鉴定 → 才上架 -->
-    <div class="order-card" data-seg="pending" data-type="consign" onclick="goShip('consign')">
-      <div class="oc-top"><span>寄售单 · JJC-260722-T7QF3X</span><span class="st gray">待寄出</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
-        <div class="oc-info"><b>翡翠飘花手镯 54 圈口</b><div class="meta">07-22 已选择委托寄售 · 交货后出报告，再由您确定挂价上架</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消订单</button><button class="sm hi" onclick="event.stopPropagation();goShip('consign')">去预约交货</button></div>
-    </div>
-    <div class="order-card" data-seg="pending" data-type="consign" onclick="go('s-book-ok')">
-      <div class="oc-top"><span class="oc-ch">代收点</span><b style="font-size:13.5px;">当面交件</b><span class="st gold">待到店</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
-        <div class="oc-info"><b>集团运营店NO.007</b><div class="meta">寄售单 · JJC-260722-2WNK9D｜翡翠晴水牌 1 件</div><div class="meta">当面清点、录像封存后转运质检中心 · 去程免运费</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('free')">取消预约</button><button class="sm" onclick="event.stopPropagation();toast('演示：地图导航到店')">地图导航</button></div>
-    </div>
-    <div class="order-card" data-seg="doing" data-type="consign" onclick="goDetail('JJC-260721-B6HP2W')">
-      <div class="oc-top"><span>寄售单 · JJC-260721-B6HP2W</span><span class="st gray">鉴定中</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-bead" style="width:42px;height:42px;"></div></div>
-        <div class="oc-info"><b>翡翠糯冰福瓜吊坠</b><div class="meta">07-21 质检中心签收 · 第三方鉴定公司出具报告中</div><div class="meta">报告出具后由您确定挂价并上架商城</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();askCancel('paid')">取消寄售</button><button class="sm hi" onclick="event.stopPropagation();goDetail('JJC-260721-B6HP2W')">查看进度</button></div>
-    </div>
-    <div class="order-card" data-seg="doing" data-type="consign" onclick="goConsign('live')">
-      <div class="oc-top"><span>寄售单 · JJC-260713-9KM4VZ</span><span class="st gold">在售中</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
-        <div class="oc-info"><b>翡翠阳绿方牌</b><div class="meta">07-13 上架 · 挂价 ¥3,600 · 浏览 326 · 收藏 18</div><div class="pr"><span class="tag">鉴定报告已公示</span></div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('修改挂价（演示）：降价可提高成交率')">降价促售</button><button class="sm hi" onclick="event.stopPropagation();go('s-consign')">寄售管理</button></div>
-    </div>
-    <!-- 售出到到账最长 10 天（买家确认收货后分账）。这段过程若不可见，卖家只会来问客服"东西卖了怎么没钱" -->
-    <div class="order-card" data-seg="doing" data-type="consign" onclick="goConsign('sold')">
-      <div class="oc-top"><span>寄售单 · JJC-260701-N3XR8T</span><span class="st">已售出 · 待买家确认收货</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-drop" style="width:34px;height:44px;"></div></div>
-        <div class="oc-info">
-          <b>翡翠冰糯种叶子吊坠</b>
-          <div class="meta">07-19 商城售出 · 挂价 ¥2,600</div>
-          <div class="pr">预计到手 <span class="price">¥2,340</span></div>
-          <div class="meta">买家逾期未确认的，07-29 自动确认；确认后款项直接汇入您的收款账户</div>
-        </div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();go('s-goods')">查看商品页</button><button class="sm" onclick="event.stopPropagation();go('s-service')">联系客服</button></div>
-    </div>
-    <!-- 「已取消」装的是"未成交而结束"的全部情形，不止用户主动取消。
-         拒绝报价的单此前在原型里无处可去——定义写出来才发现这个缺口 -->
-    <!-- A-21：安逸金无退货按钮，买家需联系客服，受理后订单转「退货中」。
-         归「售后」段而非新设段位——它是需要平台介入处理的进行中事项（4.5.3 判据）。
-         2026-08-12：寄售不支持七日无理由退货，此段位只剩「货品与描述不符 / 鉴定结论有误」一类，
-         量级大幅下降但不能删——这一类《消法》第 24 条排除不掉。 -->
-    <!-- ⑯ 只有「在售中／已售出」两个态，没有「退货中」；卡片整体不再跳 ⑯（会落到错的态），
-         处理入口交给下面两个按钮。退货中的详情屏本身还缺，见 review.md -->
-    <div class="order-card" data-seg="aftersale" data-type="consign" onclick="toast('退货进度（演示）· 详情请联系客服')">
-      <div class="oc-top"><span>寄售单 · JJC-260709-W4RT6K</span><span class="st red">退货中</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
-        <div class="oc-info"><b>翡翠飘阳绿叶子</b><div class="meta">07-09 已售出 ¥2,180 · 买家以货品与描述不符申请退货</div><div class="meta">款项尚未放款，退货运费由平台承担；货品退回质检中心后由您决定重新上架或寄回</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('退货进度（演示）')">退货进度</button><button class="sm hi" onclick="event.stopPropagation();go('s-chat')">联系客服</button></div>
-    </div>
-    <div class="order-card" data-seg="cancelled" data-type="recycle" onclick="goDetail('JJH-260717-8VD3KP')">
-      <div class="oc-top"><span>回收单 · JJH-260717-8VD3KP</span><span class="st gray">已拒绝报价</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
-        <div class="oc-info"><b>翡翠糯种福豆吊坠</b><div class="meta">07-17 本轮最高报价 ¥860 · 您已拒绝</div><div class="meta">回程运费 ¥13 与鉴定费 ¥20 已支付 · 07-19 已签收</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('物流详情（演示）')">物流详情</button><button class="sm hi" onclick="event.stopPropagation();goForm('cash','pickup')">重新估价</button></div>
-    </div>
-    <div class="order-card" data-seg="cancelled" data-type="recycle" onclick="goDetail('JJH-260715-6HW2NF')">
-      <div class="oc-top"><span>回收单 · JJH-260715-6HW2NF</span><span class="st gray">已取消</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-ring" style="width:44px;height:44px;"></div></div>
-        <div class="oc-info"><b>翡翠豆种圆条手镯</b><div class="meta">07-15 您在报价出具前取消本单 · 07-16 货品已寄回</div><div class="meta">回程运费 ¥13 由您承担 · 未收取鉴定费</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('物流详情（演示）')">物流详情</button><button class="sm hi" onclick="event.stopPropagation();goForm('cash','pickup')">重新估价</button></div>
-    </div>
-    <!-- 结论解释不是售后：它发生在用户确认成交之前，订单仍停在「待确认」，
-         只是确认时效被延长 24 小时。归入售后会让用户以为交易已结束 -->
-    <div class="order-card" data-seg="pending" data-type="recycle" onclick="go('s-service')">
-      <div class="oc-top"><span>回收单 · JJH-260716-Q4ZJ7M</span><span class="st red">结论解释中</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-drop" style="width:38px;height:46px;"></div></div>
-        <div class="oc-info"><b>翡翠白底青挂件</b><div class="meta">07-16 提交鉴定结论异议 · 客服已受理</div><div class="meta">可回看开箱录像，由鉴定方逐项解释判断依据 · 确认时效已延长 24 小时</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();toast('开箱核验录像回放（演示）')">开箱录像</button><button class="sm hi" onclick="event.stopPropagation();go('s-chat')">联系客服</button></div>
-    </div>
-    <!-- 售后＝成交之后才可能出的问题：机构逾期未打款、货损赔付、报告与实物不符。
-         这些都要平台介入处理，是「进行中」而非终态，所以不能并进「已完成」 -->
-    <div class="order-card" data-seg="aftersale" data-type="recycle" onclick="go('s-funds')">
-      <div class="oc-top"><span>回收单 · JJH-260714-9PT5RB</span><span class="st red">先行赔付中</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-bead" style="width:42px;height:42px;"></div></div>
-        <div class="oc-info"><b>翡翠满绿珠链</b><div class="meta">07-14 确认成交 ¥3,280 · 机构未在 24 小时内打款</div><div class="meta">平台已先行赔付，并向该机构追偿、扣划保证金，无需您自行交涉</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();go('s-funds')">资金记录</button><button class="sm hi" onclick="event.stopPropagation();go('s-chat')">联系客服</button></div>
-    </div>
-    <div class="order-card" data-seg="done" data-type="recycle" onclick="goDetail('JJH-260713-3XM8VD')">
-      <div class="oc-top"><span>回收单 · JJH-260713-3XM8VD</span><span class="st green">已打款</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-drop" style="width:40px;height:48px;"></div></div>
-        <div class="oc-info"><b>翡翠飘绿佛公吊坠</b><div class="meta">顺丰上门 · 07-15 成交 · 打款方：粤宝翡翠</div><div class="pr">成交金额 <span class="price">¥4,600</span></div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();goDetail('JJH-260713-3XM8VD')">查看详情</button><button class="sm hi" onclick="event.stopPropagation();goForm('cash','')">再卖一件</button></div>
-    </div>
-    <div class="order-card" data-seg="done" data-type="consign" onclick="toast('寄售成交详情（演示）')">
-      <div class="oc-top"><span>寄售单 · JJC-260620-5DW7QJ</span><span class="st green">寄售已成交</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-drop" style="width:38px;height:44px;"></div></div>
-        <div class="oc-info"><b>翡翠糯冰福瓜吊坠</b><div class="meta">07-08 商城售出 · 挂价 ¥1,850</div><div class="pr">实收金额 <span class="price">¥1,665</span></div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();go('s-certs')">查看证书</button><button class="sm hi" onclick="event.stopPropagation();goForm('consign','')">再寄售一件</button></div>
-    </div>
-    <div class="order-card" data-seg="done" data-type="recycle" onclick="goDetail('JJH-260603-K7QW42')">
-      <div class="oc-top"><span>回收单 · JJH-260603-K7QW42</span><span class="st green">已打款</span></div>
-      <div class="oc-body">
-        <div class="thumb-box"><div class="jade-ring" style="width:40px;height:40px;"></div></div>
-        <div class="oc-info"><b>翡翠白底青挂件</b><div class="meta">驻店门店当面成交 · 06-05 · 打款方：瑞玉堂</div><div class="pr">成交金额 <span class="price">¥1,120</span>（含加价券 ¥10）</div></div>
-      </div>
-      <div class="oc-btns"><button class="sm" onclick="event.stopPropagation();goDetail('JJH-260603-K7QW42')">查看详情</button><button class="sm hi" onclick="event.stopPropagation();goForm('cash','')">再卖一件</button></div>
-    </div>
+    <div id="order-list"></div>
     <div class="order-empty" id="order-empty" style="display:none;">
       <div class="oe-box"><svg class="ico"><use href="#i-box"/></svg></div>
       <div class="oe-txt" id="oe-txt">还没有订单</div>
@@ -2507,7 +2324,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
         <b class="guest-only" onclick="goLogin()" style="cursor:pointer;">登录 ›</b></div>
       <div class="hd-acts">
         <div class="setting" onclick="go('s-settings')" title="设置"><svg class="ico"><use href="#i-gear"/></svg></div>
-        <div class="setting" onclick="go('s-messages')" title="消息"><svg class="ico"><use href="#i-chat"/></svg><i class="dot">2</i></div>
+        <div class="setting" onclick="go('s-messages')" title="消息"><svg class="ico"><use href="#i-chat"/></svg><i class="dot">1</i></div>
       </div>
     </div>
     <div class="vip-bar">
@@ -2535,11 +2352,11 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
         <!-- 格子名必须＝订单页的段名，否则点「待确认」落在「待处理」上会对不上（2026-08-13 随 6 段收敛同改）。
              红点保留在「待处理」上——它含着那单待您确认成交的。
              件数＝该段真实卡片数：4／4／2／2／1，合计 13＝回收单总数（进行中含新增的「估价中」1 件）。 -->
-        <div class="mg" onclick="goOrders('pending','recycle')"><div class="i"><svg class="ico"><use href="#i-clock"/></svg><i class="dot">1</i></div><b>待处理</b><span class="badge-n">4件</span></div>
-        <div class="mg" onclick="goOrders('doing','recycle')"><div class="i"><svg class="ico"><use href="#i-truck"/></svg></div><b>进行中</b><span>4件</span></div>
-        <div class="mg" onclick="goOrders('done','recycle')"><div class="i"><svg class="ico"><use href="#i-check"/></svg></div><b>已完成</b><span>2件</span></div>
-        <div class="mg" onclick="goOrders('cancelled','recycle')"><div class="i"><svg class="ico"><use href="#i-inbox"/></svg></div><b>已取消</b><span>2件</span></div>
-        <div class="mg" onclick="goOrders('aftersale','recycle')"><div class="i"><svg class="ico"><use href="#i-return"/></svg></div><b>售后</b><span>1件</span></div>
+        <div class="mg" data-cnt="recycle-pending" onclick="goOrders('pending','recycle')"><div class="i"><svg class="ico"><use href="#i-clock"/></svg><i class="dot">1</i></div><b>待处理</b><span class="badge-n">4件</span></div>
+        <div class="mg" data-cnt="recycle-doing" onclick="goOrders('doing','recycle')"><div class="i"><svg class="ico"><use href="#i-truck"/></svg></div><b>进行中</b><span>4件</span></div>
+        <div class="mg" data-cnt="recycle-done" onclick="goOrders('done','recycle')"><div class="i"><svg class="ico"><use href="#i-check"/></svg></div><b>已完成</b><span>2件</span></div>
+        <div class="mg" data-cnt="recycle-cancelled" onclick="goOrders('cancelled','recycle')"><div class="i"><svg class="ico"><use href="#i-inbox"/></svg></div><b>已取消</b><span>2件</span></div>
+        <div class="mg" data-cnt="recycle-aftersale" onclick="goOrders('aftersale','recycle')"><div class="i"><svg class="ico"><use href="#i-return"/></svg></div><b>售后</b><span>1件</span></div>
       </div>
     </div>
     <div class="card">
@@ -2549,11 +2366,18 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
              其中「鉴定中」那张原来在「我的」里没有任何入口。
              件数＝该段真实卡片数：2／3／1／0／1，合计 7＝寄售单总数。
              「已取消 0 件」如实写 0，不隐藏——隐藏会让两组格数又不一致。 -->
-        <div class="mg" onclick="goOrders('pending','consign')"><div class="i"><svg class="ico"><use href="#i-clock"/></svg></div><b>待处理</b><span>2件</span></div>
-        <div class="mg" onclick="goOrders('doing','consign')"><div class="i"><svg class="ico"><use href="#i-tag"/></svg></div><b>进行中</b><span>3件</span></div>
-        <div class="mg" onclick="goOrders('done','consign')"><div class="i"><svg class="ico"><use href="#i-check"/></svg></div><b>已完成</b><span>1件</span></div>
-        <div class="mg" onclick="goOrders('cancelled','consign')"><div class="i"><svg class="ico"><use href="#i-inbox"/></svg></div><b>已取消</b><span>0件</span></div>
-        <div class="mg" onclick="goOrders('aftersale','consign')"><div class="i"><svg class="ico"><use href="#i-return"/></svg></div><b>售后</b><span>1件</span></div>
+        <div class="mg" data-cnt="consign-pending" onclick="goOrders('pending','consign')"><div class="i"><svg class="ico"><use href="#i-clock"/></svg></div><b>待处理</b><span>2件</span></div>
+        <div class="mg" data-cnt="consign-doing" onclick="goOrders('doing','consign')"><div class="i"><svg class="ico"><use href="#i-tag"/></svg></div><b>进行中</b><span>3件</span></div>
+        <div class="mg" data-cnt="consign-done" onclick="goOrders('done','consign')"><div class="i"><svg class="ico"><use href="#i-check"/></svg></div><b>已完成</b><span>1件</span></div>
+        <div class="mg" data-cnt="consign-cancelled" onclick="goOrders('cancelled','consign')"><div class="i"><svg class="ico"><use href="#i-inbox"/></svg></div><b>已取消</b><span>0件</span></div>
+        <div class="mg" data-cnt="consign-aftersale" onclick="goOrders('aftersale','consign')"><div class="i"><svg class="ico"><use href="#i-return"/></svg></div><b>售后</b><span>1件</span></div>
+      </div>
+      <!-- ⑯ 的一层入口。问题 43 把「在售中／待到账」两个直达格撤回 ⑯ 内部之后，
+           「我的」就没有任何一条路通到寄售管理了——用户实测反馈"不知道怎么进"。
+           放成整行入口而不是恢复直达格：五格与回收组同构（43 刚统一好）不被破坏，⑯ 又重新一层可达 -->
+      <div class="hr"></div>
+      <div class="rule-mini" style="cursor:pointer;display:flex;align-items:center;" onclick="go('s-consign')">
+        <span style="flex:1;">管理在售货品 · 定价 / 调价 / 转回收 / 召回</span><span class="arrow">›</span>
       </div>
     </div>
     <div class="card">
@@ -2649,8 +2473,47 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     <div class="empty-state"><div class="es-ico"><svg class="ico"><use href="#i-tag"/></svg></div><b>您还没有寄售中的翡翠</b><div class="es-act" onclick="goForm('consign','pickup')">去免费估价</div></div>
     <div class="state-demo">
       <b>演示</b>
+      <span data-cs="price" onclick="setConsignState('price')">待定价</span>
       <span class="on" data-cs="live" onclick="setConsignState('live')">在售中</span>
       <span data-cs="sold" onclick="setConsignState('sold')">已售出</span>
+    </div>
+    <!-- 待定挂价：报告出具 → 上架之间，是寄售流程里**唯一需要用户动手**的一步，
+         原来全站没有这个状态，也没有入口——用户从「鉴定中」等到头，不知道下一步该干什么 -->
+    <div id="cons-price" style="display:none;">
+      <div class="card" style="margin-top:10px;">
+        <div class="cons-item">
+          <div class="pic"><div class="jade-bead" style="width:52px;height:52px;"></div></div>
+          <div style="flex:1;">
+            <b>翡翠糯冰福瓜吊坠</b>
+            <div class="no">寄售单 JJC-260721-B6HP2W · 一物一码 SY-260721-D2WQ9XF5 · <span class="tag" style="margin:0;">待定挂价</span></div>
+            <div class="no"><svg class="ico"><use href="#i-report"/></svg> 鉴定报告已出具 <span style="color:var(--jade);cursor:pointer;" onclick="goReport('GY-20260708-1182')">查看报告 ›</span></div>
+          </div>
+        </div>
+        <div class="rp-kv" style="margin-top:10px;">
+          <div class="kv"><span>种水</span><b>糯冰种</b></div>
+          <div class="kv"><span>颜色</span><b>淡绿飘花</b></div>
+          <div class="kv"><span>结论</span><b>天然翡翠（A货）</b></div>
+          <div class="kv"><span>总重</span><b>15.80 g</b></div>
+        </div>
+      </div>
+      <div class="ref-card" style="cursor:default;">
+        <div class="rf-t">平台参考区间</div>
+        <div class="rf-v" id="cp-ref">¥1,500 – ¥2,000</div>
+        <div class="rf-s">依据鉴定报告与商城同类历史成交测算 · <b>挂价由您确定，平台不替您定价</b></div>
+      </div>
+      <div class="card">
+        <div class="sec-title">设置挂价</div>
+        <div class="field" style="padding-left:0;padding-right:0;">
+          <span class="lb">挂价</span>
+          <span class="val edit" id="cp-price" contenteditable="true" data-ph="请输入挂价金额" oninput="cpCalc()"></span>
+          <span style="color:var(--ink3);font-size:12.5px;">元</span>
+        </div>
+        <div class="rule-mini" style="padding-top:10px;">售出后预计到手 <b id="cp-net" style="color:var(--red);font-size:15px;">—</b>　<span style="color:var(--ink3);">（已扣寄售服务费 10%）</span></div>
+      </div>
+      <div class="two-btns" style="margin-bottom:20px;">
+        <button class="btn btn-ghost" onclick="askSwitch('toRecycle')">转现款回收</button>
+        <button class="btn btn-main" onclick="cpPublish()">确认挂价 · 上架商城</button>
+      </div>
     </div>
     <div id="cons-sold" style="display:none;">
       <div class="card" style="margin-top:10px;">
@@ -2738,7 +2601,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
   </div>
   <div class="scroll pg-gray" style="padding-top:2px;">
     <div class="guest-state"><div class="es-ico"><svg class="ico"><use href="#i-lock"/></svg></div><b>登录后查看您的优惠券</b><div class="es-act" onclick="goLogin()">登录</div></div>
-    <div class="empty-state" id="coupon-empty"><div class="es-ico"><svg class="ico"><use href="#i-ticket"/></svg></div><b>没有可使用的优惠券</b><div class="es-act" onclick="goFaq(0)">去看看怎么获得</div></div>
+    <div class="empty-state" id="coupon-empty"><div class="es-ico"><svg class="ico"><use href="#i-ticket"/></svg></div><b>没有可使用的优惠券</b><div class="es-act" onclick="goFaqK('nocert')">去看看怎么获得</div></div>
     <div class="coupon" data-cp="valid">
       <div class="cp-l"><div class="amt">+<small>¥</small>50</div><div class="cond">满5000可用</div></div>
       <div class="cp-r"><b>回收加价券</b><div class="sub">现款回收成交价满 ¥5,000，在成交价基础上<b style="color:var(--red);">额外多付您 ¥50</b></div><div class="exp">来源：注册新人礼 · 有效期至 2026-12-31</div></div>
@@ -2770,7 +2633,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
          证书是 NGTC/GTC 等检测机构出具的纸质证书。两者不可混称，字段与编号也不同 -->
     <div class="state-demo"><b>演示</b><span class="on" onclick="toggleBlank(this,'certs-box','certs-blank')">有货品</span><span onclick="toggleBlank(this,'certs-box','certs-blank')">空态</span></div>
     <div id="certs-blank" class="blank" style="display:none;">
-      <div class="bi">◈</div><div class="bt">还没有成交记录</div>
+      <div class="bi"><svg class="ico"><use href="#i-gem"/></svg></div><div class="bt">还没有成交记录</div>
             <button class="btn btn-main" onclick="goForm('cash','')">免费估价</button>
     </div>
     <div id="certs-box">
@@ -2806,7 +2669,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     <div class="tip-note">每笔均标注<b>付款方</b> · <b>款项都不经久久金账户</b></div>
     <div class="state-demo"><b>演示</b><span class="on" onclick="toggleBlank(this,'funds-box','funds-blank')">有记录</span><span onclick="toggleBlank(this,'funds-box','funds-blank')">空态</span></div>
     <div id="funds-blank" class="blank" style="display:none;">
-      <div class="bi">¥</div><div class="bt">暂无资金记录</div>
+      <div class="bi"><svg class="ico"><use href="#i-ledger"/></svg></div><div class="bt">暂无资金记录</div>
           </div>
     <div id="funds-box">
     <div class="month-hd">2026年7月</div>
@@ -2915,7 +2778,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     </div>
     <div style="padding:26px 24px 0;">
       <button class="btn btn-gold" style="height:46px;width:100%;font-size:15px;" onclick="toast('演示：切换手机账号')">切换手机账号</button>
-      <button class="btn btn-ghost" style="height:46px;width:100%;font-size:15px;margin-top:14px;border-color:var(--gold);color:var(--gold-deep);" onclick="toast('演示：退出登录')">退出登录</button>
+      <button class="btn btn-ghost" style="height:46px;width:100%;font-size:15px;margin-top:14px;border-color:var(--gold);color:var(--gold-deep);" onclick="doLogout()">退出登录</button>
     </div>
   </div>
 </div>
@@ -2953,7 +2816,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
   <div class="scroll pg-gray" style="padding-top:0;">
     <div class="empty-state"><div class="es-ico"><svg class="ico"><use href="#i-search"/></svg></div><b>没有找到相关问题</b><div class="es-act" onclick="go('s-chat')">联系在线客服</div></div>
     <div class="faq-head">
-      <h2>有什么可以帮助你的吗</h2>
+      <h2>有什么可以帮助您的吗</h2>
       <div class="wt"><svg class="ico"><use href="#i-clock"/></svg> 工作时间：09:00–18:00</div>
       <div class="mascot"><svg class="ico"><use href="#i-gem"/></svg></div>
     </div>
@@ -2963,7 +2826,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <div class="fe" onclick="go('s-feedback')"><div class="i"><svg class="ico"><use href="#i-edit"/></svg></div><div class="n">问题反馈</div></div>
     </div>
     <div class="faq-cats">
-      <div class="fc on" data-cat="all" onclick="faqCat(this,'all')">猜你想问</div><div class="fc" data-cat="online" onclick="faqCat(this,'online')">线上回收</div><div class="fc" data-cat="store" onclick="faqCat(this,'store')">门店回收</div><div class="fc" data-cat="consign" onclick="faqCat(this,'consign')">寄售帮卖</div><div class="fc" data-cat="rule" onclick="faqCat(this,'rule')">回收须知</div>
+      <div class="fc on" data-cat="all" onclick="faqCat(this,'all')">猜您想问</div><div class="fc" data-cat="online" onclick="faqCat(this,'online')">线上回收</div><div class="fc" data-cat="store" onclick="faqCat(this,'store')">门店回收</div><div class="fc" data-cat="consign" onclick="faqCat(this,'consign')">寄售帮卖</div><div class="fc" data-cat="rule" onclick="faqCat(this,'rule')">回收须知</div>
     </div>
     <div id="faq-list"></div>
   </div>
@@ -3023,9 +2886,9 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <div class="chat-row"><div class="chat-av k"><svg class="ico"><use href="#i-headset"/></svg></div><div class="chat-bubble"><span class="warn">回收机构不会单独联系您。如有人自称回收方要求私下交易，请立即举报。</span></div></div>
       <div class="chat-quick">
         <div class="qh"><svg class="ico"><use href="#i-flame"/></svg> 热门问题</div>
-        <div class="qq" onclick="goFaq(9)">钱是谁打给我的？是久久金吗？<span class="arrow">›</span></div>
-        <div class="qq" onclick="goFaq(4)">报价会不会到货后又变低？<span class="arrow">›</span></div>
-        <div class="qq" onclick="goFaq(2)">寄出途中破损、丢失怎么赔付？<span class="arrow">›</span></div>
+        <div class="qq" onclick="goFaqK('whopays')">钱是谁打给我的？是久久金吗？<span class="arrow">›</span></div>
+        <div class="qq" onclick="goFaqK('nochange')">报价会不会到货后又变低？<span class="arrow">›</span></div>
+        <div class="qq" onclick="goFaqK('damage')">寄出途中破损、丢失怎么赔付？<span class="arrow">›</span></div>
       </div>
     </div>
   </div>
@@ -3096,7 +2959,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       <div class="ci" id="carry-bank"><span class="st">✱</span><div><b>收款银行卡卡号</b><u>成交后由回收机构直接打款到该账户</u></div></div>
     </div>
     <div class="agree"><div class="ck off" onclick="toggleAgree(this)"></div>同意<a onclick="go('s-agr-platform')">《平台服务协议》</a><a onclick="go('s-agr-recycle')">《回收交易协议》</a><a onclick="go('s-agr-privacy')">《隐私政策》</a></div>
-    <div class="fixed-btn" style="padding-top:0;"><button class="btn btn-main" id="book-submit" onclick="submitWithAgree(this,'s-book-ok','',1)">立即预约</button></div>
+    <div class="fixed-btn" style="padding-top:0;"><button class="btn btn-main" id="book-submit" onclick="bookSubmit(this)">立即预约</button></div>
     <div class="tip-note" style="text-align:center;" id="book-foot">鉴定报告<b>免费出具</b> · 到店<b>仅支持现款回收</b>，寄售请选择邮寄或交至代收点</div>
   </div>
 </div>
@@ -3142,7 +3005,11 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     </div>
     <div class="fixed-btn" style="gap:10px;">
       <button class="btn btn-main" onclick="goAuthInfo()">提前认证信息</button>
-      <button class="btn btn-ghost" id="ok-drop-btn" style="display:none;margin-top:10px;" onclick="go('s-dropoff')">模拟：已到店完成交件 › 查看交件凭证</button>
+      <!-- 到店那条路原来走到本屏就断了：⑭ 当面报价确认**全站没有任何业务入口**，
+           只有顶部目录能到——而它正是驻店门店的核心价值屏（店内竞价、当场成交）。
+           ⑮ 也只能靠这个按钮进，且原文案写着「模拟：」，是演示控件混进了主流程。
+           现改为两态都给入口，文案按门店能力切换（见 renderBookOk）。 -->
+      <button class="btn btn-ghost" id="ok-drop-btn" style="margin-top:10px;" onclick="go('s-dropoff')">到店后 · 查看交件凭证</button>
       <button class="btn btn-ghost" style="margin-top:10px;" onclick="go('s-orders')">查看订单</button>
     </div>
   </div>
@@ -3531,13 +3398,13 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
       </div>
     </div>
     <div id="mall-error" class="blank" style="display:none;">
-      <div class="bi">!</div>
+      <div class="bi"><svg class="ico"><use href="#i-alert"/></svg></div>
       <div class="bt">没能加载出来</div>
       <div class="bs">请检查网络后重试。若反复失败，可联系客服。</div>
       <button class="btn btn-ghost" onclick="setMallState('loading');setTimeout(function(){setMallState('data')},900)">重新加载</button>
     </div>
     <div id="mall-empty" class="blank" style="display:none;">
-      <div class="bi">◇</div>
+      <div class="bi"><svg class="ico"><use href="#i-inbox"/></svg></div>
       <div class="bt">暂无在架商品</div>
       <div class="bs">每一件都有第三方鉴定报告</div>
       <button class="btn btn-main" onclick="goForm('consign','')">免费估价 · 挂出我的翡翠</button>
@@ -3718,7 +3585,7 @@ svg.ico{width:1em;height:1em;display:inline-block;vertical-align:-0.145em;flex-s
     <div class="oneline"><b>款项到账后方移交货品</b></div>
     <div class="two-btns" style="margin-bottom:20px;">
       <button class="btn btn-ghost" onclick="toast('已结束本次到店，货品请当面取回（演示）· 全程不收任何费用')">不接受 · 取回货品</button>
-      <button class="btn btn-gold" onclick="toast('已叫停本轮并申请延长一轮竞价（演示）')">延长一轮</button>
+      <button class="btn btn-gold" onclick="toast('已叫停本轮并申请延长一轮竞价（演示）')">延长一轮竞价</button>
     </div>
     <div class="quote-note" style="padding-bottom:16px;">确认前请先完成实名与绑卡 <b style="color:var(--jade);cursor:pointer;" onclick="goAuthInfo()">去完成 ›</b></div>
   </div>
@@ -4141,6 +4008,243 @@ function pickOpt(el){
   el.classList.add("on");
   if(el.closest("#s-ship"))updateShipSubmit();
 }
+/* ===== ⑲ 订单列表：由 LIST 渲染 =====
+   原来是 20 张静态卡片，而成交动作写的是 ORDERS 这张 JS 表，两者不通：
+   ⑭ 门店成交后列表里根本没有那张卡，线上成交那单的卡还停在「竞价中」。
+   ㉑ 的十格件数也改为由 LIST 统计——问题 43（件数与列表对不上）的根因一并去掉。
+   字段：id 单号｜type 业务线｜seg 段｜st/stCls 状态标签｜ch/chB 门店渠道标签（有则替代 head）
+        ｜head 单号行｜tip 温馨提示｜tc/ts 缩略图形状与尺寸｜goods 货品｜metas 说明行
+        ｜pr 价格块｜btns 按钮组 [文案, onclick, 是否主按钮]｜open 卡片本体 onclick */
+const LIST=[
+ {id:'BK-260722-001',type:'recycle',seg:'pending',st:'待到店',stCls:'gold',ch:'驻店门店',chB:'当面成交',
+  tip:'温馨提示：请记得携带相关物品及证件到门店。驻店鉴定师将当面为您出具鉴定报告',
+  tc:'jade-ring',ts:'width:44px;height:44px;',goods:'集团运营店NO.001',
+  metas:['品类：翡翠手镯｜1 件','当面出具鉴定报告（免费）· 到店时间 07-22 15:19'],
+  open:"go('s-book-ok')",btns:[['取消预约',"askCancel('free')",0],['地图导航',"toast('演示：地图导航到店')",0],['实名认证',"go('s-realname')",1]]},
+ {id:'JJH-260722-N8XC4D',type:'recycle',seg:'doing',st:'估价中',stCls:'gold',head:'回收单 · JJH-260722-N8XC4D',
+  tc:'jade-bead',ts:'width:42px;height:42px;',goods:'翡翠糯种平安扣',
+  metas:['07-22 15:58 提交 · AI 识别中，约 3 分钟出参考区间','出结果后微信通知您，再选变现方式'],
+  open:'goAiPending()',btns:[['取消订单',"askCancel('free')",0],['查看进度','goAiPending()',1]]},
+ {id:'JJH-260721-4TG9PN',type:'recycle',seg:'doing',st:'竞价中',stCls:'gold',head:'回收单 · JJH-260721-4TG9PN',
+  tc:'jade-ring',ts:'width:44px;height:44px;',goods:'翡翠冰种手镯 56.5 圈口',
+  metas:['07-21 17:24 提交 · 已推送 5 家机构'],
+  pr:'当前最高 <span class="price">¥4,600</span><div class="meta">窗口剩余 12 分 47 秒</div>',
+  open:"go('s-quote')",btns:[['终止竞价',"askCancel('quoted')",0],['看实时报价',"go('s-quote')",1]]},
+ {id:'JJH-260720-7BKW5V',type:'recycle',seg:'doing',st:'运送中',stCls:'gray',head:'回收单 · JJH-260720-7BKW5V',
+  tc:'jade-drop',ts:'width:38px;height:46px;',goods:'翡翠阳绿蛋面戒指',
+  metas:['07-20 顺丰揽收 SF1324559002 · 预计明日达质检中心','到货出具鉴定报告后，多家机构据此报价'],
+  open:"goDetail('JJH-260720-7BKW5V')",btns:[['取消回收',"askCancel('paid')",0],['物流详情',"toast('物流详情（演示）')",1]]},
+ {id:'JJH-260720-M8Q3ZH',type:'recycle',seg:'doing',st:'鉴定中',stCls:'gray',head:'回收单 · JJH-260720-M8Q3ZH',
+  tc:'jade-ring',ts:'width:44px;height:44px;',goods:'翡翠飘阳绿叶子吊坠',
+  metas:['07-20 质检中心签收 · 开箱核验已完成','第三方鉴定公司出具报告中，报告出具后开启机构竞价'],
+  open:"goDetail('JJH-260720-M8Q3ZH')",btns:[['取消回收',"askCancel('paid')",0],['查看进度',"goDetail('JJH-260720-M8Q3ZH')",1]]},
+ {id:'JJH-260719-2JF6WX',type:'recycle',seg:'pending',st:'待您确认成交',stCls:'red',head:'回收单 · JJH-260719-2JF6WX',
+  tc:'jade-bead',ts:'width:42px;height:42px;',goods:'翡翠紫罗兰珠串',
+  metas:['07-20 质检中心签收 · 07-21 鉴定报告已出具'],
+  pr:'机构报价 <span class="price">¥1,120</span><div class="meta">本轮最高 · 报价方：中翠源珠宝 · 依据报告 GY-20260721-0447</div>',
+  open:'goRecheck()',btns:[['开箱录像',"toast('开箱核验录像回放（演示）')",0],['去确认','goRecheck()',1]]},
+ {id:'JJH-260718-R5N9TC',type:'recycle',seg:'pending',st:'待寄出',stCls:'gray',head:'回收单 · JJH-260718-R5N9TC',
+  tc:'jade-drop',ts:'width:38px;height:46px;',goods:'翡翠晴水平安扣',
+  metas:['07-18 已选择现款回收 · 交货后出报告，再由多家机构报价'],
+  open:"goShip('cash')",btns:[['取消订单',"askCancel('free')",0],['去预约交货',"goShip('cash')",1]]},
+ {id:'JJC-260722-T7QF3X',type:'consign',seg:'pending',st:'待寄出',stCls:'gray',head:'寄售单 · JJC-260722-T7QF3X',
+  tc:'jade-ring',ts:'width:44px;height:44px;',goods:'翡翠飘花手镯 54 圈口',
+  metas:['07-22 已选择委托寄售 · 交货后出报告，再由您确定挂价上架'],
+  open:"goShip('consign')",btns:[['取消订单',"askCancel('free')",0],['去预约交货',"goShip('consign')",1]]},
+ {id:'JJC-260722-2WNK9D',type:'consign',seg:'pending',st:'待到店',stCls:'gold',ch:'代收点',chB:'当面交件',
+  tc:'jade-drop',ts:'width:38px;height:46px;',goods:'集团运营店NO.007',
+  metas:['寄售单 · JJC-260722-2WNK9D｜翡翠晴水牌 1 件','当面清点、录像封存后转运质检中心 · 去程免运费'],
+  open:"go('s-book-ok')",btns:[['取消预约',"askCancel('free')",0],['地图导航',"toast('演示：地图导航到店')",0]]},
+ {id:'JJC-260720-H2ND6R',type:'consign',seg:'doing',st:'鉴定中',stCls:'gray',head:'寄售单 · JJC-260720-H2ND6R',
+  tc:'jade-ring',ts:'width:44px;height:44px;',goods:'翡翠冰糯种圆牌',
+  metas:['07-20 质检中心签收 · 第三方鉴定公司出具报告中','报告出具后由您确定挂价并上架商城'],
+  open:"goDetail('JJC-260720-H2ND6R')",btns:[['取消寄售',"askCancel('paid')",0],['查看进度',"goDetail('JJC-260720-H2ND6R')",1]]},
+ /* 待定挂价：报告已出具、等用户定价上架。放在**待处理**段而不是进行中——它要用户动手。
+    原来这个环节全站没有状态也没有入口，用户从「鉴定中」等到头，不知道下一步该干什么。 */
+ {id:'JJC-260721-B6HP2W',type:'consign',seg:'pending',st:'待定挂价',stCls:'red',head:'寄售单 · JJC-260721-B6HP2W',
+  tc:'jade-bead',ts:'width:42px;height:42px;',goods:'翡翠糯冰福瓜吊坠',
+  metas:['07-21 鉴定报告已出具 · 天然 A 货 · 糯冰种','请确定挂价并上架商城，平台给参考区间、不替您定价'],
+  pr:'平台参考 <span class="price">¥1,500 – ¥2,000</span>',
+  open:"goConsign('price')",
+  btns:[['查看报告',"goReport('GY-20260708-1182')",0],['去定价上架',"goConsign('price')",1]]},
+ {id:'JJC-260713-9KM4VZ',type:'consign',seg:'doing',st:'在售中',stCls:'gold',head:'寄售单 · JJC-260713-9KM4VZ',
+  tc:'jade-ring',ts:'width:44px;height:44px;',goods:'翡翠阳绿方牌',
+  metas:['07-13 上架 · 挂价 ¥3,600 · 浏览 326 · 收藏 18'],
+  pr:'<span class="tag">鉴定报告已公示</span>',
+  open:"goConsign('live')",btns:[['降价促售',"toast('修改挂价（演示）：降价可提高成交率')",0],['寄售管理',"go('s-consign')",1]]},
+ {id:'JJC-260701-N3XR8T',type:'consign',seg:'doing',st:'已售出 · 待买家确认收货',stCls:'',head:'寄售单 · JJC-260701-N3XR8T',
+  tc:'jade-drop',ts:'width:34px;height:44px;',goods:'翡翠冰糯种叶子吊坠',
+  metas:['07-19 商城售出 · 挂价 ¥2,600','买家逾期未确认的，07-29 自动确认；确认后款项直接汇入您的收款账户'],
+  pr:'预计到手 <span class="price">¥2,340</span>',
+  open:"goConsign('sold')",btns:[['查看商品页',"go('s-goods')",0],['联系客服',"go('s-service')",0]]},
+ {id:'JJC-260709-W4RT6K',type:'consign',seg:'aftersale',st:'退货中',stCls:'red',head:'寄售单 · JJC-260709-W4RT6K',
+  tc:'jade-drop',ts:'width:38px;height:46px;',goods:'翡翠飘阳绿叶子',
+  metas:['07-09 已售出 ¥2,180 · 买家以货品与描述不符申请退货','款项尚未放款，退货运费由平台承担；货品退回质检中心后由您决定重新上架或寄回'],
+  open:"toast('退货进度（演示）· 详情请联系客服')",btns:[['退货进度',"toast('退货进度（演示）')",0],['联系客服',"go('s-chat')",1]]},
+ {id:'JJH-260717-8VD3KP',type:'recycle',seg:'cancelled',st:'已拒绝报价',stCls:'gray',head:'回收单 · JJH-260717-8VD3KP',
+  tc:'jade-drop',ts:'width:38px;height:46px;',goods:'翡翠糯种福豆吊坠',
+  metas:['07-17 本轮最高报价 ¥860 · 您已拒绝','回程运费 ¥13 与鉴定费 ¥20 已支付 · 07-19 已签收'],
+  open:"goDetail('JJH-260717-8VD3KP')",btns:[['物流详情',"toast('物流详情（演示）')",0],['重新估价',"goForm('cash','pickup')",1]]},
+ {id:'JJH-260715-6HW2NF',type:'recycle',seg:'cancelled',st:'已取消',stCls:'gray',head:'回收单 · JJH-260715-6HW2NF',
+  tc:'jade-ring',ts:'width:44px;height:44px;',goods:'翡翠豆种圆条手镯',
+  metas:['07-15 您在报价出具前取消本单 · 07-16 货品已寄回','回程运费 ¥13 由您承担 · 未收取鉴定费'],
+  open:"goDetail('JJH-260715-6HW2NF')",btns:[['物流详情',"toast('物流详情（演示）')",0],['重新估价',"goForm('cash','pickup')",1]]},
+ {id:'JJH-260716-Q4ZJ7M',type:'recycle',seg:'pending',st:'结论解释中',stCls:'red',head:'回收单 · JJH-260716-Q4ZJ7M',
+  tc:'jade-drop',ts:'width:38px;height:46px;',goods:'翡翠白底青挂件',
+  metas:['07-16 提交鉴定结论异议 · 客服已受理','可回看开箱录像，由鉴定方逐项解释判断依据 · 确认时效已延长 24 小时'],
+  open:"go('s-service')",btns:[['开箱录像',"toast('开箱核验录像回放（演示）')",0],['联系客服',"go('s-chat')",1]]},
+ {id:'JJH-260714-9PT5RB',type:'recycle',seg:'aftersale',st:'先行赔付中',stCls:'red',head:'回收单 · JJH-260714-9PT5RB',
+  tc:'jade-bead',ts:'width:42px;height:42px;',goods:'翡翠满绿珠链',
+  metas:['07-14 确认成交 ¥3,280 · 机构未在 24 小时内打款','平台已先行赔付，并向该机构追偿、扣划保证金，无需您自行交涉'],
+  open:"go('s-funds')",btns:[['资金记录',"go('s-funds')",0],['联系客服',"go('s-chat')",1]]},
+ {id:'JJH-260713-3XM8VD',type:'recycle',seg:'done',st:'已打款',stCls:'green',head:'回收单 · JJH-260713-3XM8VD',
+  tc:'jade-drop',ts:'width:40px;height:48px;',goods:'翡翠飘绿佛公吊坠',
+  metas:['顺丰上门 · 07-15 成交 · 打款方：粤宝翡翠'],
+  pr:'成交金额 <span class="price">¥4,600</span>',
+  open:"goDetail('JJH-260713-3XM8VD')",btns:[['查看详情',"goDetail('JJH-260713-3XM8VD')",0],['再卖一件',"goForm('cash','')",1]]},
+ {id:'JJC-260620-5DW7QJ',type:'consign',seg:'done',st:'寄售已成交',stCls:'green',head:'寄售单 · JJC-260620-5DW7QJ',
+  tc:'jade-drop',ts:'width:38px;height:44px;',goods:'翡翠糯冰福瓜吊坠',
+  metas:['07-08 商城售出 · 挂价 ¥1,850'],
+  pr:'实收金额 <span class="price">¥1,665</span>',
+  open:"go('s-certs')",btns:[['查看证书',"go('s-certs')",0],['再寄售一件',"goForm('consign','')",1]]},
+ {id:'JJH-260603-K7QW42',type:'recycle',seg:'done',st:'已打款',stCls:'green',head:'回收单 · JJH-260603-K7QW42',
+  tc:'jade-ring',ts:'width:40px;height:40px;',goods:'翡翠白底青挂件',
+  metas:['驻店门店当面成交 · 06-05 · 打款方：瑞玉堂'],
+  pr:'成交金额 <span class="price">¥1,120</span>（含加价券 ¥10）',
+  open:"goDetail('JJH-260603-K7QW42')",btns:[['查看详情',"goDetail('JJH-260603-K7QW42')",0],['再卖一件',"goForm('cash','')",1]]}
+];
+function orderCardHTML(o){
+  const top=o.ch
+    ? '<span class="oc-ch">'+o.ch+'</span><b style="font-size:13.5px;">'+o.chB+'</b><span class="st '+o.stCls+'">'+o.st+'</span>'
+    : '<span>'+o.head+'</span><span class="st '+o.stCls+'">'+o.st+'</span>';
+  const btns=o.btns.map(function(b){
+    // 自动把本单单号注入 askCancel——付款成功后要靠它定位该改哪一单，
+    // 逐条手写单号必然漏（这张表以后还会加卡）
+    const act=b[1].replace(/askCancel\('(\w+)'\)/,"askCancel('$1','"+o.id+"')");
+    return '<button class="sm'+(b[2]?' hi':'')+'" onclick="event.stopPropagation();'+act+'">'+b[0]+'</button>';}).join('');
+  return '<div class="order-card" data-seg="'+o.seg+'" data-type="'+o.type+'" onclick="'+o.open+'">'
+    +'<div class="oc-top">'+top+'</div>'
+    +(o.tip?'<div class="oc-tip">'+o.tip+'</div>':'')
+    +'<div class="oc-body"><div class="thumb-box"><div class="'+o.tc+'" style="'+o.ts+'"></div></div>'
+    +'<div class="oc-info"><b>'+o.goods+'</b>'
+    +o.metas.map(function(m){return '<div class="meta">'+m+'</div>';}).join('')
+    +(o.pr?'<div class="pr">'+o.pr+'</div>':'')
+    +'</div></div><div class="oc-btns">'+btns+'</div></div>';
+}
+// 重绘后要把当前筛选重新应用一遍，否则新卡片全部可见、与选中的段对不上
+function renderOrders(){
+  const box=document.getElementById('order-list');
+  if(box)box.innerHTML=LIST.map(orderCardHTML).join('');
+  renderMeCounts();
+  applyOrderFilter();
+}
+// ㉑ 十格件数由 LIST 统计，不再手写——手写正是问题 43 里「件数与列表对不上」的来源
+function renderMeCounts(){
+  document.querySelectorAll('#s-me .mg[data-cnt]').forEach(function(el){
+    const k=el.dataset.cnt.split('-'),type=k[0],seg=k[1];
+    const n=LIST.filter(function(o){return o.type===type&&o.seg===seg;}).length;
+    const sp=el.querySelector('span');
+    if(sp)sp.textContent=n+'件';
+  });
+}
+/* 提交交货后建单：⑥／⑩ 提交成功即产生一张真实订单，必须同时进 LIST（列表）与 ORDERS（详情）。
+   ⚠️ 不建单的后果是用户实测出来的：提交并付完运费后回订单页，看到的是**另一张演示单**
+      「待寄出 → 去预约交货」，点下去又要再付一次运费——用户完全有理由认为是重复收费。
+   状态按交付方式分：上门取件＝待取件（快递来拿）／自主寄件＝待寄出（你去寄）／代收点＝待到店。
+   原来三种一律写「待寄出」，对上门取件是说反了。 */
+function commitDelivery(){
+  const o=shipOk,cash=o.intent!=='consign';
+  const no=(cash?'JJH':'JJC')+'-260812-'+Math.random().toString(36).slice(2,8).toUpperCase();
+  o.no=no;
+  const exp=EXPRESS.filter(function(x){return x.k===o.exp;})[0]||EXPRESS[0];
+  const ST={pickup:['待取件','gold'],self:['待寄出','gray'],drop:['待到店','gold']}[o.way]||['待寄出','gray'];
+  const META={
+    pickup:[exp.n+' 上门取件 · 去程运费 ¥'+exp.p+' 已支付',tpText('ship')+' 上门，请保持电话畅通'],
+    self:  ['请寄往质检中心 · 运费在快递网点支付','寄出后回填快递单号，签收即开箱录像'],
+    drop:  ['交至 '+APP.store+' · 去程不收运费','店员当面清点、录像封存并出具凭证']};
+  const ACT={
+    pickup:['物流详情',"toast('物流详情（演示）：等待"+exp.n+"上门揽收')"],
+    self:  ['回填单号',"toast('演示：回填快递单号')"],
+    drop:  ['导航到店',"toast('演示：地图导航到店')"]}[o.way]||['物流详情',"toast('物流详情（演示）')"];
+  const goods=cash?'翡翠冰种手镯 56.5 圈口':'翡翠飘花手镯 54 圈口';
+  const S3={pickup:'快递上门取件',self:'您寄出并回填单号',drop:'到店交件 · 录像封存'}[o.way];
+  ORDERS[no]={route:cash?'cash':'consign',state:'doing',has:[],goods:goods,code:'SY-260812-'+no.slice(-6),
+    big:ST[0],sub:META[o.way][0],
+    tags:[['','平台全额保价']],payer:'',lab:'',
+    steps:[['done','提交估价 · AI 初估','刚刚 · 算法初估，不构成报价'],
+           ['done','选择'+(cash?'现款回收':'委托寄售')+' · 预约交货','刚刚'],
+           ['doing',S3,META[o.way][1]],
+           ['','质检中心签收 · 开箱录像 · 一物一码入库','到货后当日完成'],
+           ['','第三方鉴定公司出具鉴定报告','报告出具后进入下一步'],
+           ['',cash?'机构据报告出价 · 您确认成交':'由您确定挂价 · 上架商城',''],
+           ['',cash?'机构打款 → 平台核验到账 → 放货':'买家下单 · 确认收货后款项直达您的账户','']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
+        +'<button class="btn btn-main" onclick="'+ACT[1]+'">'+ACT[0]+'</button>'};
+  listDone({id:no,type:cash?'recycle':'consign',seg:'pending',st:ST[0],stCls:ST[1],ch:null,chB:null,tip:null,
+    tc:'jade-ring',ts:'width:44px;height:44px;',head:(cash?'回收单 · ':'寄售单 · ')+no,goods:goods,
+    metas:META[o.way],open:"goDetail('"+no+"')",
+    btns:[['取消订单',"askCancel('free')",0],[ACT[0],ACT[1],1]]});
+}
+/* ⑫ 到店预约提交后建单。⚠️ 与 ⑥⑩ 同一个毛病：47 只给邮寄那两条路加了建单，
+   ⑫ 走的是 submitWithAgree，漏了——预约完回订单页看到的仍是演示卡，
+   改过门店或时段的话就对不上。 */
+function commitBooking(){
+  const drop=APP.storeCap==='dropoff';
+  const no='JJH-260812-'+Math.random().toString(36).slice(2,8).toUpperCase();
+  ORDERS[no]={route:'cash',state:'doing',has:[],goods:'翡翠手镯',code:'SY-260812-'+no.slice(-6),
+    big:drop?'待交件':'待到店',sub:APP.store+(drop?' · 营业时间内到店交件即可':' · '+tpText('book')),
+    tags:[['','平台全额保价']],payer:'',lab:'',
+    steps:[['done','选择'+(drop?'代收点交件':'驻店门店 · 当面成交'),'刚刚 · '+APP.store],
+           ['doing',drop?'到店交件 · 店员当面清点录像封存':'按预约时段到店 · 驻店鉴定师当面出报告',
+            drop?'去程不收运费':tpText('book')],
+           ['',drop?'转运至质检中心':'报告推送机构 · 店内远程限时竞价',''],
+           ['',drop?'第三方鉴定公司出具鉴定报告':'您在店确认成交',''],
+           ['',drop?'多家机构据报告出价 · 您确认成交':'机构打款 → 平台核验到账 → 当面移交货品','']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
+        +'<button class="btn btn-main" onclick="toast(\'演示：地图导航到店\')">导航到店</button>'};
+  listDone({id:no,type:'recycle',seg:'pending',st:drop?'待交件':'待到店',stCls:'gold',
+    ch:drop?'代收点':'驻店门店',chB:drop?'当面交件':'当面成交',tip:null,
+    tc:'jade-ring',ts:'width:44px;height:44px;',goods:APP.store,
+    metas:['回收单 · '+no+'｜翡翠手镯 1 件',
+           drop?'当面清点、录像封存后转运质检中心 · 去程免运费':'当面出具鉴定报告（免费）· 到店时间 '+tpText('book')],
+    open:"go('s-book-ok')",
+    btns:[['取消预约',"askCancel('free','"+no+"')",0],['地图导航',"toast('演示：地图导航到店')",0],
+          [drop?'查看交件凭证':'查看当面报价',drop?"go('s-dropoff')":"go('s-onsite')",1]]});
+}
+function bookSubmit(btn){
+  if(agreeBlocked(btn))return;
+  if(needLogin())return;
+  commitBooking();
+  goDone('s-book-ok');
+}
+/* 逆向操作（拒绝报价／取消／流拍寄回／召回）付款成功后，列表必须同步。
+   ⚠️ 实测过不同步的样子：付完 ¥33 说不要了，页面纹丝不动、「接受 ¥4,600」按钮还挂着，
+      回订单页那单还是「竞价中」——用户完全不知道自己的操作生效没有。 */
+const CANCEL_RESULT={
+  reject:  ['cancelled','已拒绝报价','您已拒绝全部报价 · 寄回运费与鉴定费已支付'],
+  ret:     ['cancelled','已取消','您已取消本单 · 寄回运费与鉴定费已支付'],
+  retNoFee:['cancelled','已取消','报告出具前取消 · 寄回运费已支付，未收鉴定费'],
+  lapsed:  ['cancelled','已取消','本轮无机构出价 · 寄回运费已支付，未收鉴定费'],
+  recall:  ['cancelled','召回中','已进入 7 天召回期 · 货品已下架，寄回费用已支付']};
+let cancelNo='';
+function listCancelled(scene){
+  const c=CANCEL_RESULT[scene];if(!c)return;
+  const no=(scene==='reject')?(now2()==='s-recheck'?recheck.no:quoteOrderNo()):cancelNo;
+  const cur=LIST.filter(function(o){return o.id===no;})[0];
+  if(!cur)return;
+  listDone({id:no,seg:c[0],st:c[1],stCls:'gray',pr:null,
+    metas:[c[2],'货品将于 24 小时内寄出，物流可在此查看'],
+    open:"toast('物流详情（演示）')",
+    btns:[['物流详情',"toast('物流详情（演示）')",0],['重新估价',"goForm('cash','pickup')",1]]});
+  toast('订单已更新为「'+c[1]+'」');
+}
+function now2(){const s=document.querySelector('.screen.active');return s?s.id:'';}
+// 成交后把这一单在列表里就地改为已完成；找不到（如门店新建单）就插到最前
+function listDone(o){
+  const i=LIST.findIndex(function(x){return x.id===o.id;});
+  if(i>=0)LIST[i]=Object.assign({},LIST[i],o); else LIST.unshift(o);
+  renderOrders();
+}
 /* ⑥ 订单双维筛选：类型（到店/邮寄/寄售）为主，状态为次 */
 let orderType="all",orderSeg="all";
 // 每种类型真实存在的状态，切类型时据此收起不可能出现的状态段
@@ -4212,8 +4316,39 @@ function goOrders(seg,type){
 function goConsign(st){go('s-consign');setConsignState(st);}
 function setConsignState(st){
   document.querySelectorAll('#s-consign .state-demo span').forEach(x=>x.classList.toggle('on',x.dataset.cs===st));
+  document.getElementById('cons-price').style.display=st==='price'?'':'none';
   document.getElementById('cons-live').style.display=st==='live'?'':'none';
   document.getElementById('cons-sold').style.display=st==='sold'?'':'none';
+}
+/* 待定价：挂价由用户输入，页面实时算「预计到手」＝挂价 × (1 − 服务费率)。
+   费率取 CONSIGN_FEE，与 ㉕ 资金记录里那笔 10% 同源，不手写 */
+const CONSIGN_FEE=0.10;
+function cpCalc(){
+  const raw=(document.getElementById('cp-price').textContent||'').replace(/[^\d.]/g,'');
+  const n=parseFloat(raw);
+  const out=document.getElementById('cp-net');
+  if(!out)return;
+  out.textContent=(!n||n<=0)?'—':('¥'+Math.round(n*(1-CONSIGN_FEE)).toLocaleString());
+}
+function cpPublish(){
+  const raw=(document.getElementById('cp-price').textContent||'').replace(/[^\d.]/g,'');
+  const n=parseFloat(raw);
+  if(!n||n<=0){
+    toast('请先填写挂价');
+    const e=document.getElementById('cp-price');
+    e.scrollIntoView({behavior:'smooth',block:'center'});
+    e.classList.remove('flash');void e.offsetWidth;e.classList.add('flash');
+    return;
+  }
+  // 上架后这一单从「待定挂价」转入「在售中」，列表与 ㉑ 件数一并更新
+  listDone({id:'JJC-260721-B6HP2W',type:'consign',seg:'doing',st:'在售中',stCls:'gold',ch:null,chB:null,tip:null,
+    tc:'jade-bead',ts:'width:42px;height:42px;',head:'寄售单 · JJC-260721-B6HP2W',goods:'翡翠糯冰福瓜吊坠',
+    metas:['刚刚上架 · 挂价 ¥'+n.toLocaleString()+' · 预计到手 ¥'+Math.round(n*(1-CONSIGN_FEE)).toLocaleString()],
+    pr:'<span class="tag">鉴定报告已公示</span>',
+    open:"goConsign('live')",
+    btns:[['降价促售',"toast('修改挂价（演示）：降价可提高成交率')",0],['寄售管理',"goConsign('live')",1]]});
+  toast('已上架商城（演示）· 挂价 ¥'+n.toLocaleString()+'，售出后预计到手 ¥'+Math.round(n*(1-CONSIGN_FEE)).toLocaleString());
+  setConsignState('live');
 }
 function toggleAgree(el){
   el.classList.toggle("off");
@@ -4266,12 +4401,35 @@ function updateFormIntent(){
   // 原来这里按 saleIntent 切换 ② 上那条交易协议链接；② 已不再勾交易协议，该元素随之删除。
   // ⚠️ 删元素时要连着删引用它的 JS——本文件在 ⑩ 的 mailin-intent-tip 上栽过一次（静默 TypeError）
 }
+/* ② 复位：四个必传格清空、协议取消勾选。
+   放在 goForm 而不是提交成功之后——从入口（首页／tab／券包／再卖一件／重新估价）进来
+   都是「开一张新单」，该从空开始；而从 ③ 按返回退回 ② 不经 goForm，填过的内容得以保留。
+   ⚠️ 不复位的后果实测过：走完一单再点「再卖一件」，四格仍是已填、协议仍勾着，
+      第二单直接跳过必传校验——演示走第二遍就看不到校验了。 */
+function resetForm(){
+  document.querySelectorAll('#s-form .up-cell.need').forEach(function(c){
+    c.classList.remove('filled','flash');
+    c.innerHTML='<div class="plus">＋</div><span>'+c.dataset.lab+'</span>';
+  });
+  const ck=document.querySelector('#s-form .agree .ck');
+  if(ck&&!ck.classList.contains('off'))toggleAgree(ck);
+}
 function goForm(sale,deliver){
   saleIntent=sale||"cash";
   deliverIntent=deliver||"pickup";
   updateFormIntent();
   updateQuoteIntent();
+  resetForm();
+  // 快递选择也复位：它是「这一单怎么寄」，不该跨单沿用上一单选的那家
+  expPick.ship='sf';expPick.mailin='sf';renderExp('ship');renderExp('mailin');
   go('s-form');
+}
+/* ㉛ 退出登录：原来只弹 toast，不联动未登录态。
+   未登录本就是真实产品的默认态，只能从顶部演示开关进入，现场不好演示 */
+function doLogout(){
+  if(!document.body.classList.contains('demo-guest'))toggleGuest();
+  toast('已退出登录（演示）');
+  setTimeout(function(){goDone('s-home');},600);
 }
 // 首页/券包带来的变现意向只用来“预选路线”，不锁死，两条路在比价页始终可切换。
 // （旧版这里写的是“已为您推荐左侧/右侧方案”，指的是 v1 的双卡布局；那两张卡在重画 S4 时已删，
@@ -4453,6 +4611,7 @@ function shipSubmit(btn){
   // 收银台与 ⑥B 原来一律读 expPick.ship，从 ⑩ 来就会显示另一屏选的快递
   shipOk={way:way,intent:shipIntent,qty:1,exp:expPick.ship};
   if(way==="pickup"){payFreight("outbound");return;}   // 付完去程运费再落 ⑥B
+  commitDelivery();
   toast("预约成功（演示）");setTimeout(function(){goDone("s-ship-ok");},900);
 }
 /* ⑥B 交付提交成功：⑥ 与 ⑩ 共用一屏，三种交付方式渲染不同的信息区与流程条。
@@ -4472,6 +4631,7 @@ function mailinSubmit(btn){
           intent:document.getElementById("mailin-intent").classList.contains("sel-consign")?"consign":"cash",
           qty:mailinQty,exp:expPick.mailin};
   if(way==="pickup"){payFreight("outbound");return;}   // 与 ⑥ 同：付完去程运费再落 ⑥B
+  commitDelivery();
   goDone("s-ship-ok");
 }
 function renderShipOk(){
@@ -4484,8 +4644,8 @@ function renderShipOk(){
     drop:  ["✓ 已提交，请到店交件","店员当面清点、录像封存并出具凭证，去程不收运费"]};
   document.getElementById("so-title").textContent=HEAD[w][0];
   document.getElementById("so-desc").textContent=HEAD[w][1];
-  document.getElementById("so-no").textContent=(cash?"回收单 JJH":"寄售单 JJC")+"-260812-6PQ2NX"+(k>1?"（共 "+k+" 件）":"");
-  document.getElementById("so-st").textContent=(w==="drop")?"待到店":"待寄出";
+  document.getElementById("so-no").textContent=(cash?"回收单 ":"寄售单 ")+(shipOk.no||((cash?"JJH":"JJC")+"-260812-6PQ2NX"))+(k>1?"（共 "+k+" 件）":"");
+  document.getElementById("so-st").textContent={pickup:"待取件",self:"待寄出",drop:"待到店"}[w]||"待寄出";
   const INFO={
     pickup:ic("truck")+'<div><b>'+exp.n+' · 上门取件</b><u>去程运费 ¥'+exp.p+' 已支付 · 全额保价费由平台承担</u></div>'
           +'</div><div>'+ic("clock")+'<div><b>'+(document.getElementById("ship-time-val")||{}).textContent+'</b></div>'
@@ -4772,6 +4932,18 @@ const ORDERS={
            ['','机构打款 → 平台核验到账 → 放货','']],
     acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
         +'<button class="btn btn-main" onclick="odLink(1)">开箱录像</button>'},
+  'JJC-260720-H2ND6R':{route:'consign',state:'doing',has:['in'],goods:'翡翠冰糯种圆牌',code:'SY-260720-H2ND6RQ7',
+    big:'鉴定中',sub:'07-20 质检中心签收 · 报告出具后由您确定挂价并上架',
+    tags:[['','开箱核验已完成']],payer:'',lab:'鉴定方：国玉检测技术（广东）有限公司',
+    steps:[['done','提交估价 · AI 初估 ¥1,800–¥2,400','07-19 10:20 · 算法初估，不构成报价'],
+           ['done','选择委托寄售 · 预约交货','07-19 11:40 · 挂价由您确定'],
+           ['done','顺丰揽收','07-19 18:05'],
+           ['done','质检中心签收 · 开箱录像 · 一物一码入库','07-20 09:30 · ','▶ 免费回看开箱录像',1],
+           ['doing','第三方鉴定公司出具鉴定报告中','国玉检测 · 报告将随商品页向买家公示'],
+           ['','由您确定挂价 · 上架商城','平台给参考区间，页面实时显示预计到手'],
+           ['','买家下单 · 确认收货后款项直达您的账户','']],
+    acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
+        +'<button class="btn btn-main" onclick="goConsign(\'price\')">寄售管理</button>'},
   'JJC-260721-B6HP2W':{route:'consign',state:'doing',has:['in'],goods:'翡翠糯冰福瓜吊坠',code:'SY-260721-D2WQ9XF5',
     big:'鉴定中',sub:'07-21 质检中心签收 · 报告出具后由您确定挂价并上架',
     tags:[['','开箱核验已完成']],payer:'',lab:'鉴定方：国玉检测技术（广东）有限公司',
@@ -4891,6 +5063,13 @@ function confirmDeal(){
     acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
         +'<button class="btn btn-main" onclick="goForm(\'cash\',\'\')">再卖一件</button>'};
   detailNo=r.no;renderDetail();
+  // 列表同步：这一单从「竞价中／待您确认成交」转为「已确认成交」，㉑ 件数随之重算
+  listDone({id:r.no,type:'recycle',seg:'done',st:'已确认成交',stCls:'green',ch:null,chB:null,tip:null,
+    head:'回收单 · '+r.no,goods:r.goods,
+    metas:['刚刚确认成交 · 打款方：'+full,'机构将在 24 小时内打款，到账后平台才放货'],
+    pr:'成交金额 <span class="price">¥'+r.price+'</span>',
+    open:"goDetail('"+r.no+"')",
+    btns:[['查看详情',"goDetail('"+r.no+"')",0],['再卖一件',"goForm('cash','')",1]]});
   setTimeout(function(){goDone('s-detail');},900);
 }
 // 订单列表与消息进 ⑦：回到默认那一单，不带比价页的上下文
@@ -4932,8 +5111,42 @@ function onsitePick(name,price){
     acts:'<button class="btn btn-ghost" onclick="go(\'s-service\')">联系客服</button>'
         +'<button class="btn btn-main" onclick="goForm(\'cash\',\'\')">再卖一件</button>'};
   detailNo=no;renderDetail();
+  // 门店成交是一张新单，列表里原本没有，插到最前
+  listDone({id:no,type:'recycle',seg:'done',st:'已确认成交',stCls:'green',ch:'驻店门店',chB:'当面成交',tip:null,
+    tc:'jade-ring',ts:'width:44px;height:44px;',goods:'翡翠手镯 56.5 圈口',
+    metas:['回收单 · '+no+'｜集团运营店NO.001','当面成交 · 打款方：'+full+' · 到账后当面移交货品'],
+    pr:'成交金额 <span class="price">¥'+price+'</span>',
+    open:"goDetail('"+no+"')",
+    btns:[['查看详情',"goDetail('"+no+"')",0],['再卖一件',"goForm('cash','')",1]]});
   toast('已确认 ¥'+price+' 成交 · '+full+'，到账后当面移交');
   setTimeout(function(){goDone('s-detail');},900);
+}
+/* ④ 竞价倒计时：原来「还剩 12:47」是一行静态文字，永远不动——
+   而这一屏的核心价值就是"过程可见"，静态倒计时把它变成了一张图。
+   只在 ④ 处于激活态、且处于 live 态、且不在总览模式时才走，切走就不空转（同首页轮播的做法）。 */
+let bidLeft=767;               // 12:47
+function fmtLeft(n){return '还剩 '+String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');}
+setInterval(function(){
+  const q=document.getElementById('s-quote');
+  if(!q||!q.classList.contains('active')||bidState!=='live')return;
+  if(document.body.classList.contains('board'))return;
+  if(bidLeft>0)bidLeft--;
+  const t=document.getElementById('bl-timer');
+  if(t)t.textContent=bidLeft>0?fmtLeft(bidLeft):'窗口已结束';
+},1000);
+/* 延长一轮：原来点了只弹 toast，计数永远停在「已延长 0 / 2 次」。
+   上限 2 次到了就不再给延长入口——写着 0/2 却能无限点，比不写还糟 */
+let bidExtend=0;
+const BID_EXTEND_MAX=2;
+function extendBid(){
+  if(bidExtend>=BID_EXTEND_MAX){toast('已达延长上限（'+BID_EXTEND_MAX+' 次）');return;}
+  bidExtend++;bidLeft=900;
+  document.querySelectorAll('.bid-extend-n').forEach(function(e){e.textContent=bidExtend+' / '+BID_EXTEND_MAX;});
+  document.querySelectorAll('.bid-extend-btn').forEach(function(b){
+    if(bidExtend>=BID_EXTEND_MAX){b.disabled=true;b.textContent='已达延长上限';}
+  });
+  toast('已延长一轮竞价，新窗口 15 分钟（演示）');
+  setBidState('live');
 }
 let bidState='live';   // pickMerchant 要按当前这一轮算「本轮几家出价 / 是不是最高价」
 function setBidState(st){
@@ -5015,7 +5228,12 @@ function renderBookOk(){
   set('ok-time',    e=>e.textContent=tpText('book'));
   set('ok-time-row',e=>e.style.display=drop?'none':'');
   set('ok-flow',    e=>e.style.display=drop?'none':'');
-  set('ok-drop-btn',e=>e.style.display=drop?'':'none');
+  // 两态都要有下一步入口：代收点 → ⑮ 交件凭证；驻店门店 → ⑭ 当面报价确认
+  set('ok-drop-btn',e=>{
+    e.style.display='';
+    e.textContent=drop?'到店后 · 查看交件凭证 ›':'到店后 · 查看当面报价 ›';
+    e.setAttribute('onclick',drop?"go('s-dropoff')":"go('s-onsite')");
+  });
 }
 
 /* ===== FAQ 问答库（列表 / 详情 / 首页 / 客服 共用同一份数据） ===== */
@@ -5049,6 +5267,18 @@ const FAQS=[
    +'机构违约或鉴定结论错误导致您受损的，由久久金<b>先行赔付</b>，再由久久金向机构追偿并扣划保证金，无需您自行交涉。<br><br>'
    +'<b>请注意</b>：任何自称回收方要求私下交易或转账的都是骗子，请立即联系客服。'}
 ];
+/* 按内容找 FAQ，不写下标。原来首页、④、㊱ 共 8 处硬编码 goFaq(9)/(0)/(4)/(5)/(2)——
+   FAQS 一旦重排，这 8 处会集体指错（本文件在「我的」五格上已经栽过一次同样的坑：
+   写死下标，插入一个新分段后五格全部错位一格）。
+   按题干关键词匹配对"重排"免疫；仅当题干本身被改写时才需要同步这张表。 */
+const FAQ_KEY={whopays:'钱是谁打给我的',nocert:'没有证书',nochange:'到货后又变低',
+  consign:'多久能卖出去',damage:'破损、丢失',howprice:'价格如何评估',
+  howlong:'多久收到款',recall:'召回或转回收',store:'到店能做什么',require:'需要满足什么条件'};
+function goFaqK(k){
+  const q=FAQ_KEY[k];
+  const i=q?FAQS.findIndex(function(f){return f.q.indexOf(q)>=0;}):-1;
+  goFaq(i<0?0:i);
+}
 let faqIdx=0;
 function renderFaqList(){
   const box=document.getElementById('faq-list');
@@ -5095,7 +5325,7 @@ function submitFeedback(){
     const t=document.getElementById('fb-desc');
     t.innerHTML='<span class="ph">请描述您遇到的问题或建议（不少于 5 个字）…</span>';
     document.getElementById('fb-num').textContent='0';
-    go('s-me');
+    go('s-messages');
   },1000);
 }
 /* ===== FAQ 分类筛选 ===== */
@@ -5372,22 +5602,22 @@ const PAY_SCENES={
     done:"预约成功（演示）· 已支付去程运费",go:"s-ship-ok",reset:true},
   ret:{t:"支付寄回费用", rows:function(){return retRows(1);},
     note:"支付成功后 24 小时内安排寄出，订单转为已取消。",
-    done:"支付成功（演示）· 货品将于 24 小时内寄出",go:""},
+    done:"支付成功（演示）· 货品将于 24 小时内寄出",go:"s-orders"},
   reject:{t:"支付寄回费用", rows:function(){return retRows(1);},
     note:"支付成功后 24 小时内安排寄出，订单转为已取消。",
-    done:"支付成功（演示）· 货品将于 24 小时内寄出",go:""},
+    done:"支付成功（演示）· 货品将于 24 小时内寄出",go:"s-orders"},
   /* 报告出具前取消：按 4.14「鉴定费的收取以鉴定报告已出具为准」，此时成本未发生，不收鉴定费。
      ⚠️ 原来这一档直接复用 ret（含鉴定费 ¥20），而取消弹窗上白纸黑字写着「不收鉴定费」——
      用户读完点确认，收银台跳出 ¥33。 */
   retNoFee:{t:"支付寄回运费", rows:function(){return retRows(0,"鉴定报告尚未出具，不收取");},
     note:"鉴定报告尚未出具，不收取鉴定费。支付成功后 24 小时内安排寄出，订单转为已取消。",
-    done:"支付成功（演示）· 货品将于 24 小时内寄出",go:"",noId:true},
+    done:"支付成功（演示）· 货品将于 24 小时内寄出",go:"s-orders",noId:true},
   lapsed:{t:"支付寄回运费", rows:function(){return retRows(0);},
     note:"本轮无任何机构出价，不收取鉴定费。支付成功后 24 小时内安排寄出。",
-    done:"支付成功（演示）· 货品将于 24 小时内寄出",go:"",noId:true},
+    done:"支付成功（演示）· 货品将于 24 小时内寄出",go:"s-orders",noId:true},
   recall:{t:"支付召回费用", rows:function(){return retRows(1);},
     note:"支付成功后进入 7 天召回期，货品即时下架。",
-    done:"支付成功（演示）· 已进入 7 天召回期，货品已下架",go:""}
+    done:"支付成功（演示）· 已进入 7 天召回期，货品已下架",go:"s-orders"}
 };
 // 四个取回场景明细一致，只差鉴定费收不收；第三个元素是行的 onclick
 // noFee＝不收鉴定费时的理由。豁免有两种（无人出价 / 报告未出具），理由不同，不能共用一句
@@ -5464,6 +5694,8 @@ function closeCashier(){const m=document.getElementById("cash-mask");if(m)m.clas
 function payDone(){
   const c=PAY_SCENES[payScene];
   closeCashier();closePay();
+  if(payScene==="outbound")commitDelivery();   // 去程运费付成功，这一单才真正成立
+  else listCancelled(payScene);                // 拒绝／取消／流拍／召回：付成功才算数，列表同步
   toast(c.done);
   if(c.go)setTimeout(function(){(c.reset?goDone:go)(c.go);},900);
 }
@@ -5489,8 +5721,9 @@ const CANCEL_TXT={
         pay:"ret"}
 };
 let cancelKind="free";
-function askCancel(kind){
+function askCancel(kind,no){
   cancelKind=CANCEL_TXT[kind]?kind:"free";
+  cancelNo=no||"";
   const c=CANCEL_TXT[cancelKind];
   let m=document.getElementById("cx-mask");
   if(!m){
@@ -5516,6 +5749,12 @@ function doCancel(){
   // 付款本身就是最后一道确认——用户真愿意出这笔钱，才寄。收哪几项由档位声明
   const c=CANCEL_TXT[cancelKind]||CANCEL_TXT.free;
   if(c.pay){payFreight(c.pay);return;}
+  // 零费用档不过收银台，直接同步列表
+  const cur=LIST.filter(function(o){return o.id===cancelNo;})[0];
+  if(cur)listDone({id:cancelNo,seg:'cancelled',st:'已取消',stCls:'gray',pr:null,
+    metas:['您已取消本单 · 货品仍在您手中，未产生任何费用'],
+    open:"toast('本单已取消（演示）')",
+    btns:[['重新估价',"goForm('cash','pickup')",1]]});
   toast(CANCEL_TXT.free.done);
 }
 
@@ -5739,6 +5978,7 @@ renderRecheck();       // ⑦ 有初始状态，初始化必须显式渲染一�
 renderConsignRef();    // ④ 的寄售参考区间同源于 CONSIGN_REF，同样要显式渲染一次
 renderDetail();        // ⑧ 三态由数据渲染，初始化落在「已打款」那一单
 renderReport();        // ⑨ 按报告号渲染，初始化落在商城那件方牌的报告
+renderOrders();        // ⑲ 由 LIST 渲染，并顺带算出 ㉑ 的十格件数
 pickRoute('cash');     // ④ 默认落在现款回收，但寄售与它平权并列、随时可切
 renderBidList(ONSITE_SET,'onsite-list','onsite');
 renderBookForm();
